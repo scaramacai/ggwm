@@ -11,13 +11,8 @@
 
 #ifndef MAKE_DEPEND
 
-   /* We should include png.h here. See jwm.h for an explanation. */
-
 #  ifdef USE_XPM
 #     include <X11/xpm.h>
-#  endif
-#  ifdef USE_JPEG
-#     include <jpeglib.h>
 #  endif
 #  ifdef USE_CAIRO
 #     include <cairo.h>
@@ -34,9 +29,28 @@
 #include "color.h"
 #include "misc.h"
 
+
 typedef ImageNode *(*ImageLoader)(const char *fileName,
                                   int rwidth, int rheight,
                                   char preserveAspect);
+
+#if defined(USE_PNG) || defined(USE_JPEG)
+/* include stb_image.h */
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_STATIC
+#ifdef USE_JPEG
+#define STBI_ONLY_JPEG
+#endif
+#ifdef USE_PNG
+#define STBI_ONLY_PNG
+#endif
+#define STBI_NO_LINEAR
+#define STBI_NO_HDR
+#include "stb_image.h"
+
+static ImageNode *LoadSTBImage(const char *fileName, int rwidth, int rheight,
+                               char preserveAspect);
+#endif /* USE_PNG || USE_JPEG */
 
 #ifdef USE_CAIRO
 #ifdef USE_RSVG
@@ -44,14 +58,7 @@ static ImageNode *LoadSVGImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
 #endif
 #endif
-#ifdef USE_JPEG
-static ImageNode *LoadJPEGImage(const char *fileName, int rwidth, int rheight,
-                                char preserveAspect);
-#endif
-#ifdef USE_PNG
-static ImageNode *LoadPNGImage(const char *fileName, int rwidth, int rheight,
-                               char preserveAspect);
-#endif
+
 #ifdef USE_XPM
 static ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
@@ -77,11 +84,11 @@ static const struct {
    ImageLoader loader;
 } IMAGE_LOADERS[] = {
 #ifdef USE_PNG
-   {".png",       LoadPNGImage      },
+   {".png",       LoadSTBImage      },
 #endif
 #ifdef USE_JPEG
-   {".jpg",       LoadJPEGImage     },
-   {".jpeg",      LoadJPEGImage     },
+   {".jpg",       LoadSTBImage     },
+   {".jpeg",      LoadSTBImage     },
 #endif
 #ifdef USE_CAIRO
 #ifdef USE_RSVG
@@ -185,250 +192,66 @@ ImageNode *LoadImageFromDrawable(Drawable pmap, Pixmap mask)
 }
 #endif
 
-/** Load a PNG image from the given file name.
- * Since libpng uses longjmp, this function is not reentrant to simplify
- * the issues surrounding longjmp and local variables.
- */
-#ifdef USE_PNG
-ImageNode *LoadPNGImage(const char *fileName, int rwidth, int rheight,
+/* Load a (PNG, JPEG) image from the given file name, using the stb_image.h library. */
+#if defined(USE_PNG) || defined(USE_JPEG)
+ImageNode *LoadSTBImage(const char *fileName, int rwidth, int rheight,
                         char preserveAspect)
 {
 
    static ImageNode *result;
-   static FILE *fd;
-   static unsigned char **rows;
-   static png_structp pngData;
-   static png_infop pngInfo;
-   static png_infop pngEndInfo;
+   int iw, ih;
+   int img_channels;
+   unsigned char *img_data = NULL;
 
-   unsigned char header[8];
-   unsigned long rowBytes;
-   int bitDepth, colorType;
-   unsigned int x, y;
-   png_uint_32 width;
-   png_uint_32 height;
+   /* These should be uint32_t */
+   unsigned  *rgba_pointer;
+   unsigned  *argb_pointer;
+
+   unsigned int width;
+   unsigned int height;
+
+   unsigned long number_of_pixels;
+
+   unsigned long i;
 
    Assert(fileName);
 
+
    result = NULL;
-   fd = NULL;
-   rows = NULL;
-   pngData = NULL;
-   pngInfo = NULL;
-   pngEndInfo = NULL;
 
-   fd = fopen(fileName, "rb");
-   if(!fd) {
+   /* use stbi to load the image and always create 4 interleaved channels (RGBA) */
+   if (!(img_data = stbi_load(fileName, &iw, &ih, &img_channels, 4 )))  {
+      Warning(_("could not decode image: %s"), fileName);
       return NULL;
    }
 
-   x = fread(header, 1, sizeof(header), fd);
-   if(x != sizeof(header) || png_sig_cmp(header, 0, sizeof(header))) {
-      fclose(fd);
-      return NULL;
-   }
+   width = (unsigned int) iw;
+   height = (unsigned int) ih;
 
-   pngData = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-   if(JUNLIKELY(!pngData)) {
-      fclose(fd);
-      Warning(_("could not create read struct for PNG image: %s"), fileName);
-      return NULL;
-   }
-
-   if(JUNLIKELY(setjmp(png_jmpbuf(pngData)))) {
-      png_destroy_read_struct(&pngData, &pngInfo, &pngEndInfo);
-      if(fd) {
-         fclose(fd);
-      }
-      if(rows) {
-         ReleaseStack(rows);
-      }
-      DestroyImage(result);
-      Warning(_("error reading PNG image: %s"), fileName);
-      return NULL;
-   }
-
-   pngInfo = png_create_info_struct(pngData);
-   if(JUNLIKELY(!pngInfo)) {
-      png_destroy_read_struct(&pngData, NULL, NULL);
-      fclose(fd);
-      Warning(_("could not create info struct for PNG image: %s"), fileName);
-      return NULL;
-   }
-
-   pngEndInfo = png_create_info_struct(pngData);
-   if(JUNLIKELY(!pngEndInfo)) {
-      png_destroy_read_struct(&pngData, &pngInfo, NULL);
-      fclose(fd);
-      Warning("could not create end info struct for PNG image: %s", fileName);
-      return NULL;
-   }
-
-   png_init_io(pngData, fd);
-   png_set_sig_bytes(pngData, sizeof(header));
-
-   png_read_info(pngData, pngInfo);
-
-   png_get_IHDR(pngData, pngInfo, &width, &height,
-                &bitDepth, &colorType, NULL, NULL, NULL);
    result = CreateImage(width, height, 0);
 
-   png_set_expand(pngData);
+  /* It looks like jwm uses argb hence we need to do so */
 
-   if(bitDepth == 16) {
-      png_set_strip_16(pngData);
-   } else if(bitDepth < 8) {
-      png_set_packing(pngData);
-   }
+   number_of_pixels = (unsigned long) width * height;
 
-   png_set_swap_alpha(pngData);
-   png_set_filler(pngData, 0xFF, PNG_FILLER_BEFORE);
+   rgba_pointer = (unsigned  *) img_data;
+   argb_pointer = (unsigned  *) result->data;
 
-   if(colorType == PNG_COLOR_TYPE_GRAY
-      || colorType == PNG_COLOR_TYPE_GRAY_ALPHA) {
-      png_set_gray_to_rgb(pngData);
-   }
+   for(i=0;i < number_of_pixels; i++)
+    //  argb_pointer[i] = ((rgba_pointer[i] << 24) | (rgba_pointer[i] >> 8));
+    //  depends on big little endian?
+    //  I cannot understand the line below but it works
+      argb_pointer[i] = ((rgba_pointer[i] << 8) | (rgba_pointer[i] >> 24));
 
-   png_read_update_info(pngData, pngInfo);
-
-   rowBytes = png_get_rowbytes(pngData, pngInfo);
-   rows = AllocateStack(result->height * sizeof(result->data));
-   y = 0;
-   for(x = 0; x < result->height; x++) {
-      rows[x] = &result->data[y];
-      y += rowBytes;
-   }
-
-   png_read_image(pngData, rows);
-
-   png_read_end(pngData, pngInfo);
-   png_destroy_read_struct(&pngData, &pngInfo, &pngEndInfo);
-
-   fclose(fd);
-
-   ReleaseStack(rows);
-   rows = NULL;
+   /* end of alpha swap ------------------------------------------ */
+   
+   free(img_data);
 
    return result;
 
 }
-#endif /* USE_PNG */
 
-/** Load a JPEG image from the specified file. */
-#ifdef USE_JPEG
-
-typedef struct {
-   struct jpeg_error_mgr pub;
-   jmp_buf jbuffer;
-} JPEGErrorStruct;
-
-static void JPEGErrorHandler(j_common_ptr cinfo) {
-   JPEGErrorStruct *es = (JPEGErrorStruct*)cinfo->err;
-   longjmp(es->jbuffer, 1);
-}
-
-ImageNode *LoadJPEGImage(const char *fileName,
-                         int rwidth, int rheight,
-                         char preserveAspect)
-{
-   static ImageNode *result;
-   static struct jpeg_decompress_struct cinfo;
-   static FILE *fd;
-   static JSAMPARRAY buffer;
-   static JPEGErrorStruct jerr;
-
-   int rowStride;
-   int x;
-   int inIndex, outIndex;
-
-   /* Open the file. */
-   fd = fopen(fileName, "rb");
-   if(fd == NULL) {
-      return NULL;
-   }
-
-   /* Make sure everything is initialized so we can recover from errors. */
-   result = NULL;
-   buffer = NULL;
-
-   /* Setup the error handler. */
-   cinfo.err = jpeg_std_error(&jerr.pub);
-   jerr.pub.error_exit = JPEGErrorHandler;
-
-   /* Control will return here if an error was encountered. */
-   if(setjmp(jerr.jbuffer)) {
-      DestroyImage(result);
-      jpeg_destroy_decompress(&cinfo);
-      fclose(fd);
-      return NULL;
-   }
-
-   /* Prepare to load the file. */
-   jpeg_create_decompress(&cinfo);
-   jpeg_stdio_src(&cinfo, fd);
-
-   /* Check the header. */
-   jpeg_read_header(&cinfo, TRUE);
-
-   /* Pick an appropriate scale for the image.
-    * We scale the image by the scale value for the dimension with
-    * the smallest absolute change.
-    */
-   jpeg_calc_output_dimensions(&cinfo);
-   if(rwidth != 0 && rheight != 0) {
-      /* Scale using n/8 with n in [1..8]. */
-      int ratio;
-      if(abs((int)cinfo.output_width - rwidth)
-            < abs((int)cinfo.output_height - rheight)) {
-         ratio = (rwidth << 4) / cinfo.output_width;
-      } else {
-         ratio = (rheight << 4) / cinfo.output_height;
-      }
-      cinfo.scale_num = Max(1, Min(8, (ratio >> 2)));
-      cinfo.scale_denom = 8;
-   }
-
-   /* Start decompression. */
-   jpeg_start_decompress(&cinfo);
-   rowStride = cinfo.output_width * cinfo.output_components;
-   buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr)&cinfo,
-                                       JPOOL_IMAGE, rowStride, 1);
-
-   result = CreateImage(cinfo.output_width, cinfo.output_height, 0);
-
-   /* Read lines. */
-   outIndex = 0;
-   while(cinfo.output_scanline < cinfo.output_height) {
-      jpeg_read_scanlines(&cinfo, buffer, 1);
-      inIndex = 0;
-      for(x = 0; x < result->width; x++) {
-         switch(cinfo.output_components) {
-         case 1:  /* Grayscale. */
-            result->data[outIndex + 1] = GETJSAMPLE(buffer[0][inIndex]);
-            result->data[outIndex + 2] = GETJSAMPLE(buffer[0][inIndex]);
-            result->data[outIndex + 3] = GETJSAMPLE(buffer[0][inIndex]);
-            inIndex += 1;
-            break;
-         default: /* RGB */
-            result->data[outIndex + 1] = GETJSAMPLE(buffer[0][inIndex + 0]);
-            result->data[outIndex + 2] = GETJSAMPLE(buffer[0][inIndex + 1]);
-            result->data[outIndex + 3] = GETJSAMPLE(buffer[0][inIndex + 2]);
-            inIndex += 3;
-            break;
-         }
-         result->data[outIndex + 0] = 0xFF;
-         outIndex += 4;
-      }
-   }
-
-   /* Clean up. */
-   jpeg_destroy_decompress(&cinfo);
-   fclose(fd);
-
-   return result;
-
-}
-#endif /* USE_JPEG */
+#endif /* USE_PNG || USE_JPEG */
 
 #ifdef USE_CAIRO
 #ifdef USE_RSVG
