@@ -10,11 +10,11 @@
 # Origin: gettext-0.20
 GETTEXT_MACRO_VERSION = 0.20
 
-PACKAGE = jwm
-VERSION = 2.4.6
+PACKAGE = ggwm
+VERSION = 0.1.0
 PACKAGE_BUGREPORT = joewing@joewing.net
 
-SED = /usr/bin/sed
+SED = /bin/sed
 SHELL = /bin/sh
 
 
@@ -35,31 +35,31 @@ INSTALL_DATA = ${INSTALL} -m 644
 # We use $(mkdir_p).
 # In automake <= 1.9.x, $(mkdir_p) is defined either as "mkdir -p --" or as
 # "$(mkinstalldirs)" or as "$(install_sh) -d". For these automake versions,
-# ${SHELL} /home/joewing/devel/jwm/install-sh does not start with $(SHELL), so we add it.
-# In automake >= 1.10, $(MKDIR_P) is derived from ${MKDIR_P}, which is defined
+# @install_sh@ does not start with $(SHELL), so we add it.
+# In automake >= 1.10, @mkdir_p@ is derived from ${MKDIR_P}, which is defined
 # either as "/path/to/mkdir -p" or ".../install-sh -c -d". For these automake
 # versions, $(mkinstalldirs) and $(install_sh) are unused.
-mkinstalldirs = $(SHELL) ${SHELL} /home/joewing/devel/jwm/install-sh -d
-install_sh = $(SHELL) ${SHELL} /home/joewing/devel/jwm/install-sh
-MKDIR_P = .././install-sh -c -d
-mkdir_p = $(MKDIR_P)
+mkinstalldirs = $(SHELL) @install_sh@ -d
+install_sh = $(SHELL) @install_sh@
+MKDIR_P = /bin/mkdir -p
+mkdir_p = @mkdir_p@
 
 # When building gettext-tools, we prefer to use the built programs
 # rather than installed programs.  However, we can't do that when we
 # are cross compiling.
 CROSS_COMPILING = @CROSS_COMPILING@
 
-GMSGFMT_ = /usr/local/bin/msgfmt
-GMSGFMT_no = /usr/local/bin/msgfmt
-GMSGFMT_yes = /usr/local/bin/msgfmt
+GMSGFMT_ = :
+GMSGFMT_no = :
+GMSGFMT_yes = :
 GMSGFMT = $(GMSGFMT_$(USE_MSGCTXT))
-XGETTEXT_ = /usr/local/bin/xgettext
-XGETTEXT_no = /usr/local/bin/xgettext
-XGETTEXT_yes = /usr/local/bin/xgettext
+XGETTEXT_ = :
+XGETTEXT_no = :
+XGETTEXT_yes = :
 XGETTEXT = $(XGETTEXT_$(USE_MSGCTXT))
-MSGMERGE = /usr/local/bin/msgmerge
-MSGMERGE_UPDATE = /usr/local/bin/msgmerge --update
-MSGMERGE_FOR_MSGFMT_OPTION = --for-msgfmt
+MSGMERGE = :
+MSGMERGE_UPDATE = : --update
+MSGMERGE_FOR_MSGFMT_OPTION = --no-location --quiet
 MSGINIT = msginit
 MSGCONV = msgconv
 MSGFILTER = msgfilter
@@ -123,7 +123,7 @@ DISTFILESDEPS = $(DISTFILESDEPS_$(DIST_DEPENDS_ON_UPDATE_PO))
 	mv t-$@ $@
 
 
-all: all-yes
+all: all-no
 
 all-yes: $(srcdir)/stamp-po
 all-no:
@@ -172,9 +172,9 @@ $(DOMAIN).pot-update: $(POTFILES) $(srcdir)/POTFILES.in remove-potcdate.sed
 	package_gnu="$(PACKAGE_GNU)"; \
 	test -n "$$package_gnu" || { \
 	  if { if (LC_ALL=C find --version) 2>/dev/null | grep GNU >/dev/null; then \
-	         LC_ALL=C find -L $(top_srcdir) -maxdepth 1 -type f -size -10000000c -exec grep -i 'GNU jwm' /dev/null '{}' ';' 2>/dev/null; \
+	         LC_ALL=C find -L $(top_srcdir) -maxdepth 1 -type f -size -10000000c -exec grep -i 'GNU ggwm' /dev/null '{}' ';' 2>/dev/null; \
 	       else \
-	         LC_ALL=C grep -i 'GNU jwm' $(top_srcdir)/* 2>/dev/null; \
+	         LC_ALL=C grep -i 'GNU ggwm' $(top_srcdir)/* 2>/dev/null; \
 	       fi; \
 	     } | grep -v 'libtool:' >/dev/null; then \
 	     package_gnu=yes; \
@@ -206,8 +206,8 @@ $(DOMAIN).pot-update: $(POTFILES) $(srcdir)/POTFILES.in remove-potcdate.sed
 	      --add-comments=TRANSLATORS: \
 	      --files-from=$(srcdir)/POTFILES.in \
 	      --copyright-holder='$(COPYRIGHT_HOLDER)' \
-	      --package-name="$${package_prefix}jwm" \
-	      --package-version='2.4.6' \
+	      --package-name="$${package_prefix}ggwm" \
+	      --package-version='0.1.0' \
 	      --msgid-bugs-address="$$msgid_bugs_address" \
 	      $(XGETTEXT_OPTIONS)  \
 	    ;; \
@@ -264,7 +264,7 @@ $(POFILES): $(POFILESDEPS)
 
 install: install-exec install-data
 install-exec:
-install-data: install-data-yes
+install-data: install-data-no
 	if test "$(PACKAGE)" = "gettext-tools"; then \
 	  $(mkdir_p) $(DESTDIR)$(gettextsrcdir); \
 	  for file in $(DISTFILES.common) Makevars.template; do \
@@ -322,7 +322,7 @@ install-strip: install
 
 installdirs: installdirs-exec installdirs-data
 installdirs-exec:
-installdirs-data: installdirs-data-yes
+installdirs-data: installdirs-data-no
 	if test "$(PACKAGE)" = "gettext-tools"; then \
 	  $(mkdir_p) $(DESTDIR)$(gettextsrcdir); \
 	else \
@@ -366,7 +366,7 @@ installcheck:
 
 uninstall: uninstall-exec uninstall-data
 uninstall-exec:
-uninstall-data: uninstall-data-yes
+uninstall-data: uninstall-data-no
 	if test "$(PACKAGE)" = "gettext-tools"; then \
 	  for file in $(DISTFILES.common) Makevars.template; do \
 	    rm -f $(DESTDIR)$(gettextsrcdir)/$$file; \

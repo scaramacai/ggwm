@@ -174,9 +174,9 @@ static const char *FALSE_VALUE = "false";
 static const char *TRUE_VALUE = "true";
 
 static const char * const CONFIG_FILES[] = {
-  "$XDG_CONFIG_HOME/jwm/jwmrc",
-  "$HOME/.config/jwm/jwmrc",
-  "$HOME/.jwmrc",
+  "$XDG_CONFIG_HOME/ggwm/ggwmrc",
+  "$HOME/.config/ggwm/ggwmrc",
+  "$HOME/.ggwmrc",
   SYSTEM_CONFIG
 };
 static const unsigned CONFIG_FILE_COUNT = ARRAY_LENGTH(CONFIG_FILES);

@@ -4,7 +4,7 @@
 /* Define to 1 if using 'alloca.c'. */
 /* #undef C_ALLOCA */
 
-/* Define to debug JWM */
+/* Define to debug GGWM */
 /* #undef DEBUG */
 
 /* Define to disable confirm dialogs */
@@ -46,9 +46,6 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
-
-/* Define to 1 if you have the <jpeglib.h> header file. */
-/* #undef HAVE_JPEGLIB_H */
 
 /* Define to 1 if you have the <langinfo.h> header file. */
 #define HAVE_LANGINFO_H 1
@@ -144,19 +141,19 @@
 #define PACKAGE_BUGREPORT "joewing@joewing.net"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "jwm"
+#define PACKAGE_NAME "ggwm"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "jwm 2.4.0"
+#define PACKAGE_STRING "ggwm 0.1.0"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "jwm"
+#define PACKAGE_TARNAME "ggwm"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "2.4.0"
+#define PACKAGE_VERSION "0.1.0"
 
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
@@ -193,7 +190,7 @@
 /* #undef USE_RSVG */
 
 /* Define to enable the X shape extension */
-/* #undef USE_SHAPE */
+#define USE_SHAPE 1
 
 /* Define to enable XBM images */
 #define USE_XBM 1

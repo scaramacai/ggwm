@@ -111,8 +111,6 @@ AC_DEFUN([GGWM_PKGCONFIG],
    fi
 ])
 
-GGWM_PKGCONFIG([use_pkgconfig_png], [libpng])
-GGWM_PKGCONFIG([use_pkgconfig_jpeg], [libjpeg])
 GGWM_PKGCONFIG([use_pkgconfig_cairo], [cairo])
 GGWM_PKGCONFIG([use_pkgconfig_rsvg], [librsvg-2.0])
 GGWM_PKGCONFIG([use_pkgconfig_freetype2], [freetype2])
@@ -154,28 +152,8 @@ fi
 AC_ARG_ENABLE(png,
    AS_HELP_STRING([--disable-png],[disable PNG images]) )
 if test "$enable_png" != "no" ; then
-   if test "$use_pkgconfig_png" = "yes" ; then
-      PNG_CFLAGS=`$PKGCONFIG --cflags libpng`
-      PNG_LDFLAGS=`$PKGCONFIG --libs libpng`
       enable_png="yes"
-   elif which libpng-config >/dev/null ; then
-      PNG_CFLAGS=`libpng-config --cflags`
-      PNG_LDFLAGS=`libpng-config --ldflags`
-      enable_png="yes"
-   else
-      PNG_CFLAGS=""
-      PNG_LDFLAGS="-lpng -lz -lm"
-      AC_CHECK_LIB(png, png_read_image,
-         [ enable_png="yes" ],
-         [ enable_png="no"
-           AC_MSG_WARN([unable to use libpng, PNG support disabled]) ],
-         [ $PNG_LDFLAGS ])
-   fi
-   if test "$enable_png" = "yes" ; then
-      CFLAGS="$CFLAGS $PNG_CFLAGS"
-      LDFLAGS="$LDFLAGS $PNG_LDFLAGS"
       AC_DEFINE(USE_PNG, 1, [Define to use libpng])
-   fi
 fi
 
 ############################################################################
@@ -246,28 +224,7 @@ fi
 AC_ARG_ENABLE(jpeg,
    AS_HELP_STRING([--disable-jpeg],[disable JPEG images]) )
 if test "$enable_jpeg" != "no" ; then
-   if test "$use_pkgconfig_jpeg" = "yes" ; then
-      JPEG_CFLAGS=`$PKGCONFIG --cflags libjpeg`
-      JPEG_LDFLAGS=`$PKGCONFIG --libs libjpeg`
       enable_jpeg="yes"
-   else
-      JPEG_LDFLAGS="-ljpeg"
-      AC_CHECK_HEADERS([jpeglib.h], [],
-         [ enable_jpeg="no"
-           AC_MSG_WARN([unable to include jpeglib.h, JPEG support disabled])
-         ])
-      if test "$enable_jpeg" != "no" ; then
-         AC_CHECK_LIB(jpeg, jpeg_start_decompress,
-            [ enable_jpeg="yes" ],
-            [ enable_jpeg="no"
-              AC_MSG_WARN([unable to use libjpeg, JPEG support disabled]) ],
-            [ $JPEG_LDFLAGS ])
-      fi
-   fi
-fi
-if test "$enable_jpeg" = "yes" ; then
-   LDFLAGS="$LDFLAGS $JPEG_LDFLAGS"
-   CFLAGS="$CFLAGS $JPEG_CFLAGS"
    AC_DEFINE(USE_JPEG, 1, [Define to use libjpeg])
 fi
 
