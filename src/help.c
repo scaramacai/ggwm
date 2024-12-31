@@ -15,7 +15,8 @@ static void DisplayUsage(void);
 /** Display program name, version, and compiled options . */
 void DisplayAbout(void)
 {
-   printf("JWM v" PACKAGE_VERSION " by Joe Wingbermuehle\n");
+   printf("GGWM v" PACKAGE_VERSION " by Scaramacai\n");
+   printf("Based on JWM v2.4.6 by Joe Wingbermuehle\n");
    DisplayCompileOptions();
 }
 
@@ -32,9 +33,7 @@ void DisplayCompileOptions(void)
 #ifdef USE_FRIBIDI
           "fribidi "
 #endif
-#ifdef USE_ICONS
-          "icons "
-#endif
+          "icons svg "
 #ifdef USE_JPEG
           "jpeg "
 #endif
@@ -46,9 +45,6 @@ void DisplayCompileOptions(void)
 #endif
 #ifdef USE_SHAPE
           "shape "
-#endif
-#if defined(USE_CAIRO) && defined(USE_RSVG)
-          "svg "
 #endif
 #ifdef USE_XBM
           "xbm "

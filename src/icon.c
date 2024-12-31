@@ -21,7 +21,6 @@
 
 IconNode emptyIcon;
 
-#ifdef USE_ICONS
 
 /* Must be a power of two. */
 #define HASH_SIZE 128
@@ -35,13 +34,11 @@ typedef struct IconPathNode {
 /* These extensions are appended to icon names during search. */
 const char *ICON_EXTENSIONS[] = {
    "",
+   ".svg",
+   ".SVG",
 #ifdef USE_PNG
    ".png",
    ".PNG",
-#endif
-#if defined(USE_CAIRO) && defined(USE_RSVG)
-   ".svg",
-   ".SVG",
 #endif
 #ifdef USE_XPM
    ".xpm",
@@ -918,5 +915,3 @@ void SetDefaultIcon(const char *name)
    }
    defaultIconName = CopyString(name);
 }
-
-#endif /* USE_ICONS */

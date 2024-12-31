@@ -949,11 +949,9 @@ char DrawBorderIcon(BorderIconType t,
                     Pixmap canvas, long fg)
 {
    if(buttonIcons[t]) {
-#ifdef USE_ICONS
       const unsigned titleHeight = GetTitleHeight();
       PutIcon(buttonIcons[t], canvas, fg, xoffset + 2, yoffset + 2,
               titleHeight - 2, titleHeight - 2);
-#endif
       return 1;
    } else {
       return 0;
@@ -1162,7 +1160,6 @@ void DrawMinButton(unsigned xoffset, unsigned yoffset,
 void DrawIconButton(const ClientNode *np, int x, int y,
                     Pixmap canvas, GC gc, long fg, char active)
 {
-#ifdef USE_ICONS
    const char hasIcon = np->icon ? 1 : 0;
    const int titleHeight = GetTitleHeight();
    const int iconSize = hasIcon ? GetBorderIconSize() : Max((int)titleHeight - 2, 0);
@@ -1180,7 +1177,6 @@ void DrawIconButton(const ClientNode *np, int x, int y,
            x + iconXOffset,
            y + iconYOffset,
            iconSize, iconSize);
-#endif
 }
 
 /** Redraw the borders on the current desktop.

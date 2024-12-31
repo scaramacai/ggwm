@@ -50,8 +50,6 @@ typedef struct IconNode {
 
 extern IconNode emptyIcon;
 
-#ifdef USE_ICONS
-
 /*@{*/
 void InitializeIcons(void);
 void StartupIcons(void);
@@ -120,8 +118,6 @@ void SetDefaultIcon(const char *name);
 #define LoadNamedIcon( a, b, c )           NULL
 #define DestroyIcon( a )                   ICON_DUMMY_FUNCTION
 #define SetDefaultIcon( a )                ICON_DUMMY_FUNCTION
-
-#endif /* USE_ICONS */
 
 #endif /* ICON_H */
 

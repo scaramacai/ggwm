@@ -12,7 +12,7 @@ GETTEXT_MACRO_VERSION = 0.20
 
 PACKAGE = ggwm
 VERSION = 0.1.0
-PACKAGE_BUGREPORT = joewing@joewing.net
+PACKAGE_BUGREPORT = scaramacai
 
 SED = /bin/sed
 SHELL = /bin/sh

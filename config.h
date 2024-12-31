@@ -123,7 +123,7 @@
 #define HAVE_X11_XLIB_H 1
 
 /* Define to 1 if you have the <X11/xpm.h> header file. */
-#define HAVE_X11_XPM_H 1
+/* #undef HAVE_X11_XPM_H */
 
 /* Define to 1 if you have the <X11/Xproto.h> header file. */
 #define HAVE_X11_XPROTO_H 1
@@ -138,7 +138,7 @@
 #define ICONV_CONST 
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "joewing@joewing.net"
+#define PACKAGE_BUGREPORT "scaramacai"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "ggwm"
@@ -171,32 +171,23 @@
 /* default system configuration path */
 #define SYSTEM_CONFIG "/usr/local/etc/system.jwmrc"
 
-/* Define to use Cairo */
-/* #undef USE_CAIRO */
-
 /* Define to use FriBidi */
 /* #undef USE_FRIBIDI */
-
-/* Define to enable icon support */
-#define USE_ICONS 1
 
 /* Define to use libjpeg */
 /* #undef USE_JPEG */
 
 /* Define to use libpng */
-#define USE_PNG 1
-
-/* Define to use rsvg */
-/* #undef USE_RSVG */
+/* #undef USE_PNG */
 
 /* Define to enable the X shape extension */
-#define USE_SHAPE 1
+/* #undef USE_SHAPE */
 
 /* Define to enable XBM images */
-#define USE_XBM 1
+/* #undef USE_XBM */
 
 /* Define to enable Xft */
-#define USE_XFT 1
+/* #undef USE_XFT */
 
 /* Define to enable Xinerama */
 /* #undef USE_XINERAMA */
@@ -205,7 +196,7 @@
 /* #undef USE_XMU */
 
 /* Define to enable XPM support */
-#define USE_XPM 1
+/* #undef USE_XPM */
 
 /* Define to enable the XRender extension */
 #define USE_XRENDER 1

@@ -7,19 +7,32 @@
  *
  */
 
+/**
+ * Modified 2024 Scaramacai
+ * to remove dependencies on libpng, libjpeg, and librsvng
+ * and use instead stb_image.h (https://github.com/nothings/stb)
+ * and nanosvg(raster).h (https://github.com/memononen/nanosvg)
+ *
+ */
+
+/**
+ * I spent a lot of time in figuring out how to use stb_image.h
+ * and ended up with an implementation that is very similar to
+ * another one, that I was not aware of, and found later on github.
+ * That is due to technosaurus (https://github.com/technosaurus).
+ * Technosaururus also started implementing nanosvg.
+ * To my knowledge the more recent version of image.c by technosaurus can
+ * be found at https://github.com/Miteam/jwm/blob/master/src/image.c
+ *
+ */
+ 
+
 #include "jwm.h"
 
 #ifndef MAKE_DEPEND
 
 #  ifdef USE_XPM
 #     include <X11/xpm.h>
-#  endif
-#  ifdef USE_CAIRO
-#     include <cairo.h>
-#     include <cairo-svg.h>
-#  endif
-#  ifdef USE_RSVG
-#     include <librsvg/rsvg.h>
 #  endif
 #endif /* MAKE_DEPEND */
 
@@ -29,10 +42,19 @@
 #include "color.h"
 #include "misc.h"
 
+/* Use anyway nanosvg hence icons are always available */
+#define NANOSVG_IMPLEMENTATION
+#include "nanosvg.h"
+#define NANOSVGRAST_IMPLEMENTATION
+#include "nanosvgrastFLTK.h"
 
+#include <stdint.h> //for uint32_t
 typedef ImageNode *(*ImageLoader)(const char *fileName,
                                   int rwidth, int rheight,
                                   char preserveAspect);
+
+static ImageNode *LoadNSVGImage(const char *fileName, int rwidth, int rheight,
+                               char preserveAspect);
 
 #if defined(USE_PNG) || defined(USE_JPEG)
 /* include stb_image.h */
@@ -52,13 +74,6 @@ static ImageNode *LoadSTBImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
 #endif /* USE_PNG || USE_JPEG */
 
-#ifdef USE_CAIRO
-#ifdef USE_RSVG
-static ImageNode *LoadSVGImage(const char *fileName, int rwidth, int rheight,
-                               char preserveAspect);
-#endif
-#endif
-
 #ifdef USE_XPM
 static ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
@@ -67,9 +82,8 @@ static ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 static ImageNode *LoadXBMImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
 #endif
-#ifdef USE_ICONS
+
 static ImageNode *CreateImageFromXImages(XImage *image, XImage *shape);
-#endif
 
 #ifdef USE_XPM
 static int AllocateColor(Display *d, Colormap cmap, char *name,
@@ -83,17 +97,13 @@ static const struct {
    const char *extension;
    ImageLoader loader;
 } IMAGE_LOADERS[] = {
+   {".svg",       LoadNSVGImage      },
 #ifdef USE_PNG
    {".png",       LoadSTBImage      },
 #endif
 #ifdef USE_JPEG
    {".jpg",       LoadSTBImage     },
    {".jpeg",      LoadSTBImage     },
-#endif
-#ifdef USE_CAIRO
-#ifdef USE_RSVG
-   {".svg",       LoadSVGImage      },
-#endif
 #endif
 #ifdef USE_XPM
    {".xpm",       LoadXPMImage      },
@@ -162,7 +172,29 @@ ImageNode *LoadImage(const char *fileName, int rwidth, int rheight,
 }
 
 /** Load an image from a pixmap. */
-#ifdef USE_ICONS
+
+static void swap_channels(ImageNode * image)
+{
+   uint32_t i;
+   uint32_t num_pixels;
+   uint32_t * data_pointer;
+
+   if(!image) return;
+
+   num_pixels = image->width * image->height;
+   data_pointer = (uint32_t  *) image->data;
+
+   for(i=0;i < num_pixels; i++)
+    //  data_pointer[i] = ((data_pointer[i] << 24) | (data_pointer[i] >> 8));
+    //  depends on LSB first or MSB first, endianess, etc.
+    //  the line below works
+      data_pointer[i] = ((data_pointer[i] << 8) | (data_pointer[i] >> 24));
+
+   return;
+}
+
+   
+   
 ImageNode *LoadImageFromDrawable(Drawable pmap, Pixmap mask)
 {
    ImageNode *result = NULL;
@@ -190,160 +222,87 @@ ImageNode *LoadImageFromDrawable(Drawable pmap, Pixmap mask)
    }
    return result;
 }
-#endif
 
-/* Load a (PNG, JPEG) image from the given file name, using the stb_image.h library. */
+/* Load a (PNG, JPEG) image from the given file name,
+ * using the stb_image.h library. */
 #if defined(USE_PNG) || defined(USE_JPEG)
-ImageNode *LoadSTBImage(const char *fileName, int rwidth, int rheight,
+static ImageNode *LoadSTBImage(const char *fileName, int rwidth, int rheight,
                         char preserveAspect)
 {
 
-   static ImageNode *result;
-   int iw, ih;
+   ImageNode *result = NULL;
    int img_channels;
-   unsigned char *img_data = NULL;
 
-   /* These should be uint32_t */
-   unsigned  *rgba_pointer;
-   unsigned  *argb_pointer;
+//   Assert(fileName);
+// We already checked that filename is Ok
 
-   unsigned int width;
-   unsigned int height;
+   result = CreateImage(0, 0, 0);
 
-   unsigned long number_of_pixels;
-
-   unsigned long i;
-
-   Assert(fileName);
-
-
-   result = NULL;
-
-   /* use stbi to load the image and always create 4 interleaved channels (RGBA) */
-   if (!(img_data = stbi_load(fileName, &iw, &ih, &img_channels, 4 )))  {
+   /* use stbi to load the image and always
+    * create 4 interleaved channels (RGBA) */
+   if (!(result->data = stbi_load(fileName, &result->width, &result->height,
+                                  &img_channels, 4 )))  {
       Warning(_("could not decode image: %s"), fileName);
+      DestroyImage(result);
       return NULL;
    }
 
-   width = (unsigned int) iw;
-   height = (unsigned int) ih;
+  /* It looks like jwm uses abgr hence we need to swap channels */
 
-   result = CreateImage(width, height, 0);
+   swap_channels(result);
 
-  /* It looks like jwm uses argb hence we need to do so */
-
-   number_of_pixels = (unsigned long) width * height;
-
-   rgba_pointer = (unsigned  *) img_data;
-   argb_pointer = (unsigned  *) result->data;
-
-   for(i=0;i < number_of_pixels; i++)
-    //  argb_pointer[i] = ((rgba_pointer[i] << 24) | (rgba_pointer[i] >> 8));
-    //  depends on big little endian?
-    //  I cannot understand the line below but it works
-      argb_pointer[i] = ((rgba_pointer[i] << 8) | (rgba_pointer[i] >> 24));
-
-   /* end of alpha swap ------------------------------------------ */
+   /* end of channel swap ------------------------------------------ */
    
-   free(img_data);
-
    return result;
-
 }
+
 
 #endif /* USE_PNG || USE_JPEG */
 
-#ifdef USE_CAIRO
-#ifdef USE_RSVG
-ImageNode *LoadSVGImage(const char *fileName, int rwidth, int rheight,
-                        char preserveAspect)
+static ImageNode *LoadNSVGImage(const char *fileName, int rwidth, int rheight,
+                                char preserveAspect)
 {
-
-#if !GLIB_CHECK_VERSION(2, 35, 0)
-   static char initialized = 0;
-#endif
-   ImageNode *result = NULL;
-   RsvgHandle *rh;
-   RsvgDimensionData dim;
-   GError *e;
-   cairo_surface_t *target;
-   cairo_t *context;
-   int stride;
-   int i;
    float xscale, yscale;
+   ImageNode *result = NULL;
+   NSVGimage *image = nsvgParseFromFile(fileName, "px", 96.0f);
 
-   Assert(fileName);
+   if (image) {
+       if(rwidth == 0 || rheight == 0) {
+          rwidth = (int) image->width;
+          rheight = (int) image->height;
+          xscale = 1.0;
+          yscale = 1.0;
+       } else if(preserveAspect) {
+          if(abs((int) image->width - rwidth) < abs((int) image->height - rheight)) {
+             xscale = (float)rwidth / image->width;
+             rheight = image->height * xscale;
+          } else {
+             xscale = (float)rheight / image->height;
+             rwidth = image->width * xscale;
+          }
+          yscale = xscale;
+       } else {
+          xscale = (float)rwidth / image->width;
+          yscale = (float)rheight / image->height;
+       }
 
-#if !GLIB_CHECK_VERSION(2, 35, 0)
-   if(!initialized) {
-      initialized = 1;
-      g_type_init();
-   }
-#endif
+       result = CreateImage(rwidth,rheight,0);
 
-   /* Load the image from the file. */
-   e = NULL;
-   rh = rsvg_handle_new_from_file(fileName, &e);
-   if(!rh) {
-      g_error_free(e);
-      return NULL;
-   }
+       NSVGrasterizer *rast = nsvgCreateRasterizer();
+       nsvgRasterizeXY(rast, image, 0,0, xscale, yscale,
+                       result->data, rwidth, rheight, rwidth*4);
+       nsvgDeleteRasterizer(rast);
+       nsvgDelete(image);
 
-   rsvg_handle_get_dimensions(rh, &dim);
-   if(rwidth == 0 || rheight == 0) {
-      rwidth = dim.width;
-      rheight = dim.height;
-      xscale = 1.0;
-      yscale = 1.0;
-   } else if(preserveAspect) {
-      if(abs(dim.width - rwidth) < abs(dim.height - rheight)) {
-         xscale = (float)rwidth / dim.width;
-         rheight = dim.height * xscale;
-      } else {
-         xscale = (float)rheight / dim.height;
-         rwidth = dim.width * xscale;
-      }
-      yscale = xscale;
-   } else {
-      xscale = (float)rwidth / dim.width;
-      yscale = (float)rheight / dim.height;
-   }
-
-   result = CreateImage(rwidth, rheight, 0);
-   memset(result->data, 0, rwidth * rheight * 4);
-
-   /* Create the target surface. */
-   stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, rwidth);
-   target = cairo_image_surface_create_for_data(result->data,
-                                                CAIRO_FORMAT_ARGB32,
-                                                rwidth, rheight, stride);
-   context = cairo_create(target);
-   cairo_scale(context, xscale, yscale);
-   cairo_paint_with_alpha(context, 0.0);
-   rsvg_handle_render_cairo(rh, context);
-   cairo_destroy(context);
-   cairo_surface_destroy(target);
-   g_object_unref(rh);
-
-   for(i = 0; i < 4 * rwidth * rheight; i += 4) {
-      const unsigned int temp = *(unsigned int*)&result->data[i];
-      const unsigned int alpha  = (temp >> 24) & 0xFF;
-      const unsigned int red    = (temp >> 16) & 0xFF;
-      const unsigned int green  = (temp >>  8) & 0xFF;
-      const unsigned int blue   = (temp >>  0) & 0xFF;
-      result->data[i + 0] = alpha;
-      if(alpha > 0) {
-         result->data[i + 1] = (red * 255) / alpha;
-         result->data[i + 2] = (green * 255) / alpha;
-         result->data[i + 3] = (blue * 255) / alpha;
-      }
-   }
-
-   return result;
-
+       if (result->data) {
+           swap_channels(result);
+        } else {
+           DestroyImage(result);
+           result = NULL;
+        }
+     }
+  return result;
 }
-#endif /* USE_RSVG */
-#endif /* USE_CAIRO */
 
 /** Load an XPM image from the specified file. */
 #ifdef USE_XPM
@@ -401,7 +360,6 @@ ImageNode *LoadXBMImage(const char *fileName, int rwidth, int rheight,
 #endif /* USE_XBM */
 
 /** Create an image from XImages giving color and shape information. */
-#ifdef USE_ICONS
 #define HASH_SIZE 16
 ImageNode *CreateImageFromXImages(XImage *image, XImage *shape)
 {
@@ -438,7 +396,6 @@ ImageNode *CreateImageFromXImages(XImage *image, XImage *shape)
    return result;
 }
 #undef HASH_SIZE
-#endif /* USE_ICONS */
 
 ImageNode *CreateImage(unsigned width, unsigned height, char bitmap)
 {

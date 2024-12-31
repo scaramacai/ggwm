@@ -2,7 +2,7 @@
 # GGWM autoconf.
 ############################################################################
 
-AC_INIT([ggwm],[0.1.0],[joewing@joewing.net])
+AC_INIT([ggwm],[0.1.0],[scaramacai])
 AC_PREREQ([2.72])
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_SRCDIR([po])
@@ -111,8 +111,6 @@ AC_DEFUN([GGWM_PKGCONFIG],
    fi
 ])
 
-GGWM_PKGCONFIG([use_pkgconfig_cairo], [cairo])
-GGWM_PKGCONFIG([use_pkgconfig_rsvg], [librsvg-2.0])
 GGWM_PKGCONFIG([use_pkgconfig_freetype2], [freetype2])
 GGWM_PKGCONFIG([use_pkgconfig_xft], [xft])
 GGWM_PKGCONFIG([use_pkgconfig_xrender], [xrender])
@@ -130,24 +128,7 @@ else
 fi
 
 ############################################################################
-# Check if icon support was requested.
-############################################################################
-AC_ARG_ENABLE(icons,
-   AS_HELP_STRING([--disable-icons],[disable icon support]) )
-if test "$enable_icons" != "no" ; then
-   enable_icons="yes"
-   AC_DEFINE(USE_ICONS, 1, [Define to enable icon support] )
-else
-   enable_png="no"
-   enable_xbm="no"
-   enable_xpm="no"
-   enable_rsvg="no"
-   enable_cairo="no"
-   enable_jpeg="no"
-fi
-
-############################################################################
-# Check if PNG support was requested and available.
+# Check if PNG support was requested.
 ############################################################################
 AC_ARG_ENABLE(png,
    AS_HELP_STRING([--disable-png],[disable PNG images]) )
@@ -157,69 +138,7 @@ if test "$enable_png" != "no" ; then
 fi
 
 ############################################################################
-# Check if Cairo support was requested and available.
-############################################################################
-AC_ARG_ENABLE(cairo,
-   AS_HELP_STRING([--disable-cairo],[disable Cairo support]) )
-if test "$enable_cairo" != "no" ; then
-   if test "$use_pkgconfig_cairo" = "yes" ; then
-      CAIRO_CFLAGS=`$PKGCONFIG --cflags cairo`
-      CAIRO_LDFLAGS=`$PKGCONFIG --libs cairo`
-      enable_cairo="yes"
-   elif which cairo-config >/dev/null ; then
-      CAIRO_CFLAGS=`cairo-config --cflags`
-      CAIRO_LDFLAGS=`cairo-config --libs`
-      enable_cairo="yes"
-   else
-      CAIRO_LDFLAGS="-lcairo"
-      AC_CHECK_LIB(cairo, cairo_create,
-         [ enable_cairo="yes" ],
-         [ enable_cairo="no"
-           AC_MSG_WARN([unable to use Cairo, Cairo support disabled]) ],
-         [ $CAIRO_LDFLAGS ])
-   fi
-fi
-if test "$enable_cairo" = "no" ; then
-   if test "$enable_rsvg" != "no" ; then
-      AC_MSG_WARN([disabling rsvg because Cairo is disabled])
-      enable_rsvg="no"
-   fi
-fi
-
-############################################################################
-# Check if librsvg support was requested and available.
-############################################################################
-AC_ARG_ENABLE(rsvg,
-   AS_HELP_STRING([--disable-rsvg],[disable rsvg support]) )
-if test "$enable_rsvg" != "no" ; then
-   if test "$use_pkgconfig_rsvg" = "yes" ; then
-      RSVG_CFLAGS=`$PKGCONFIG --cflags librsvg-2.0`
-      RSVG_LDFLAGS=`$PKGCONFIG --libs librsvg-2.0`
-      enable_rsvg="yes"
-   else
-      RSVG_LDFLAGS="-lrsvg-2"
-      AC_CHECK_LIB(rsvg-2, rsvg_handle_render_cairo,
-         [ enable_rsvg="yes" ],
-         [ enable_rsvg="no"
-           AC_MSG_WARN([unable to use rsvg, rsvg support disabled]) ],
-         [ $RSVG_LDFLAGS ])
-   fi
-fi
-if test "$enable_rsvg" = "no" ; then
-   if test "$enable_cairo" != "no" ; then
-      AC_MSG_WARN([disabling Cairo because rsvg is disabled])
-      enable_cairo="no"
-   fi
-fi
-if test "$enable_rsvg" = "yes" ; then
-   LDFLAGS="$LDFLAGS $RSVG_LDFLAGS $CAIRO_LDFLAGS"
-   CFLAGS="$CFLAGS $RSVG_CFLAGS $CAIRO_CFLAGS"
-   AC_DEFINE(USE_CAIRO, 1, [Define to use Cairo])
-   AC_DEFINE(USE_RSVG, 1, [Define to use rsvg])
-fi
-
-############################################################################
-# Check if JPEG support was requested and available.
+# Check if JPEG support was requested.
 ############################################################################
 AC_ARG_ENABLE(jpeg,
    AS_HELP_STRING([--disable-jpeg],[disable JPEG images]) )
@@ -533,9 +452,6 @@ echo
 echo "Options"
 echo
 echo "    Confirm:  $enable_confirm"
-echo "    Icon:     $enable_icons"
-echo "    Cairo:    $enable_cairo"
-echo "    RSVG:     $enable_rsvg"
 echo "    PNG:      $enable_png"
 echo "    JPEG:     $enable_jpeg"
 echo "    XBM:      $enable_xbm"
