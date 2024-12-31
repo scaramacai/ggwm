@@ -1,3 +1,17 @@
+ggwm
+==============================================================================
+
+**ggwm** is my personal fork of the excellent window manager [JWM](https://github.com/joewing/jwm) by Joe Wingbermuehle.
+
+Why? Because I want a wm that is more light-weight than jwm, but still enough user-friendly to be also usable by a non skilled person.
+
+So I decided that jwm was a good starting point. It has a taskbar and a menu, can manage virtual desktops, it is easy to configure and so on. Furthermore its code is well structured and easy to understand and hack.
+
+The goals of the project are mainly focused on reducing dependecies on external libraries and possibly reduce the size of the executable itself. 
+
+The following is the original README.md of JWM
+
+------------------------------------------------------------------------------
 JWM (Joe's Window Manager)
 ==============================================================================
 
