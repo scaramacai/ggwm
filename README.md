@@ -35,4 +35,4 @@ the following libraries:
 
 
 ------------------------------------------------------------------------------
-The original README.md of JWMs in [here](./README.jwm.md)
+The original README.md of JWMs in [here]($ROOT/dir/README.jwm.md)
