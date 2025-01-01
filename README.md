@@ -9,6 +9,21 @@ So I decided that jwm was a good starting point. It has a taskbar and a menu, ca
 
 The goals of the project are mainly focused on reducing dependecies on external libraries and possibly reduce the size of the executable itself. 
 
+ggwm natively supports svg images and icons (thanks to [nanosvg](https://github.com/memononen/nanosvg)) and
+png and jpeg formats using the single file image loader [stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h).
+
+If available and not disabled at compile time, ggwm  will also use
+the following libraries:
+
+ - fribidi for bi-directional text support.
+ - libXext for the shape extension.
+ - libXrender for the render extension.
+ - libXmu for rounded corners.
+ - libXft for anti-aliased and true type fonts.
+ - libXinerama for multiple head support.
+ - libXpm for XPM icons and backgrounds.
+
+
 The following is the original README.md of JWM
 
 ------------------------------------------------------------------------------
