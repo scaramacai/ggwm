@@ -1,14 +1,14 @@
 .\"
 .\" groff -man -Tascii jwm.1
 .\"
-.TH jwm 1 "@DATE@" "v@VERSION@"
+.TH ggwm 1 "@DATE@" "v@VERSION@"
 .SH NAME
-JWM - Joe's Window Manager
+ggwm Window Manager
 
 .SH SYNOPSIS
-.BR jwm " [options]"
+.BR ggwm " [options]"
 .SH DESCRIPTION
-JWM is a window manager for the X11 Window System.
+ggwm is a window manager for the X11 Window System.
 
 .SH OPTIONS
 \fB\-display\fP \fIdisplay\fP
@@ -18,7 +18,7 @@ This option specifies the display to use; see \fBX\fP(1).
 .P
 .B "-exit"
 .RS
-Exit JWM by sending _JWM_EXIT to the root window.
+Exit ggwm by sending _JWM_EXIT to the root window.
 .RE
 .P
 \fB\-f\fP \fIfile\fP
@@ -40,7 +40,7 @@ file to ensure there are no errors.
 .P
 .B "-restart"
 .RS
-Restart JWM by sending _JWM_RESTART to the root window.
+Restart ggwm by sending _JWM_RESTART to the root window.
 .RE
 .P
 .B "-reload"
@@ -54,27 +54,27 @@ Display version information and exit.
 .RE
 
 .SH FILES
-.IP "@SYSCONF@/system.jwmrc"
-The default JWM configuration file.
-.IP "~/.jwmrc"
+.IP "@SYSCONF@/system.ggwmrc"
+The default ggwm configuration file.
+.IP "~/.ggwmrc"
 Default local configuration file. Copy the default configuration file to this
 location to make user-specific changes.  See also, option \fB\-f\fP.
 
 .SH CONFIGURATION
 .B OVERVIEW
 .RS
-Configuration of JWM is done by editing ".jwmrc" (or the configuration
+Configuration of ggwm is done by editing ".ggwmrc" (or the configuration
 file specified with the \fB\-f\fP option).  This file is XML
 making it easy to edit, either by hand or programmatically. The
-example.jwmrc gives an example configuration file.
-Before restarting JWM, it is a good idea to run "jwm \-p" to make
+example.ggwmrc gives an example configuration file.
+Before restarting ggwm, it is a good idea to run "jwm \-p" to make
 sure the configuration file is free of errors.  Otherwise you may end up
 without a root menu.
 .RE
 .P
 .B "ROOT MENU"
 .RS
-The root menu in JWM is the primary way of starting programs.
+The root menu in ggwm is the primary way of starting programs.
 It also provides a way to restart or exit the window manager.
 The outer most tag is \fBRootMenu\fP. The following attributes are
 supported:
@@ -103,7 +103,7 @@ Determines if a label appears at the top of the menu. Default is false.
 .P
 \fBlabel\fP \fIstring\fP
 .RS
-The label to display at the top of the menu. Default is "JWM".
+The label to display at the top of the menu. Default is "ggwm".
 .RE
 .P
 \fBdynamic\fP \fIstring\fP
@@ -438,7 +438,7 @@ The icon to use. No default.
 .B Exit
 .RS
 This tag adds a menu item to exit the window manager. If text is
-present within this tag, it is interpreted as a command to run when JWM
+present within this tag, it is interpreted as a command to run when ggwm
 exits. This can be used to start another window manager.
 The following attributes are supported:
 .P
@@ -475,7 +475,7 @@ This tag supports the following attributes:
 .RS
 Specifies the location to hide the tray when not activated. Default is "off"
 to disable hiding.
-Possible values are "left", "right", "top", "bottom", "off", "on" (JWM
+Possible values are "left", "right", "top", "bottom", "off", "on" (ggwm
 picks the location), and "invisible" (trays must be activated by a key
 binding).
 .RE
@@ -587,7 +587,7 @@ from the font used.
 Add a dock for system notifications. This can be used by those programs
 that use the _NET_SYSTEM_TRAY_Sn selection. The size of the Dock is
 dynamic based on the size of the tray and the number of items contained.
-Only one Dock is allowed per instance of JWM. This tag supports the
+Only one Dock is allowed per instance of ggwm. This tag supports the
 following attributes:
 .P
 \fBwidth\fP \fIint\fP
@@ -736,9 +736,9 @@ An icon to display. No default.
 .B INCLUDES
 .RS
 Other configuration files or the output of programs may be included under
-the JWM tag via the \fBInclude\fP tag. The text of this tag specifies the
+the ggwm tag via the \fBInclude\fP tag. The text of this tag specifies the
 location of an additional configuration file or program. The path may be
-relative to the location JWM was started, an absolute path, or a path
+relative to the location ggwm was started, an absolute path, or a path
 referencing an environment variable (using '$').
 If the text starts with "exec:", the specified program is executed and
 its output is used.
@@ -754,7 +754,7 @@ with the \fBGroup\fP tag. As many program groups can be created as desired.
 If one or more \fBName\fP tags is specified, at least one name must
 match.  Likewise, if one or more \fBClass\fP tags is specified, at least
 one class must match.
-JWM matches using extended POSIX regular expressions for both \fBName\fP
+ggwm matches using extended POSIX regular expressions for both \fBName\fP
 and \fBClass\fP tags.  See \fBregex\fP(7).
 Within the \fBGroup\fP tag the following tags are supported:
 .P
@@ -1454,7 +1454,7 @@ See the \fBCOLORS\fP section for more information.
 
 .B "MENU STYLE"
 .RS
-The \fBMenuStyle\fP tag controls the look of the menus in JWM
+The \fBMenuStyle\fP tag controls the look of the menus in ggwm
 (this includes the root menu and window menus).
 The following attribute is supported:
 .P
@@ -1566,15 +1566,15 @@ The background color. See the \fBCOLORS\fP section for more information.
 
 .B FONTS
 .RS
-Fonts for various parts of JWM are specified within a \fBFont\fP tag. The
+Fonts for various parts of ggwm are specified within a \fBFont\fP tag. The
 text of this tag determines the font to use.
-This can be either a standard X font string or, if compiled with XFT
-support, an XFT font string.
+This can be either a standard X font string or, if compiled with SFT
+support, an SFT font string.
 .RE
 
 .B COLORS
 .RS
-Colors for various parts of JWM are specified within specific tags
+Colors for various parts of ggwm are specified within specific tags
 (described above). Colors may either be hex triplets in RGB format
 (for example, #FF0000 is red) or by a name recognized by the X server.
 For components that support gradients, two colors may be specified
@@ -1607,7 +1607,7 @@ Note that icon, PNG, JPEG, and XPM support are compile-time options.
 
 .B "KEY BINDINGS"
 .RS
-Keyboard bindings in JWM are specified in \fBKey\fP tags.
+Keyboard bindings in ggwm are specified in \fBKey\fP tags.
 Either the \fBkey\fP or \fBkeycode\fP attributes must be specified
 to determine which key will cause an action. The optional
 attribute, \fBmask\fP, specifies what key mask, if any, must be in effect
@@ -1749,7 +1749,7 @@ Unhide the tray (when using autohide).
 .IP \fBexec:\fP\fIcommand\fP
 Execute \fIcommand\fP.
 .IP \fBrestart\fP
-Restart JWM.
+Restart ggwm.
 .RE
 .P
 Note that there are no default key bindings.
@@ -2007,7 +2007,7 @@ The location of the status window. The default is \fBscreen\fP.
 .P
 .B RestartCommand
 .RS
-A command to run when JWM restarts.
+A command to run when ggwm restarts.
 .RE
 .P
 .B SnapMode
@@ -2022,12 +2022,12 @@ are between 1 and 32 inclusive.
 .P
 .B StartupCommand
 .RS
-A command to run when JWM starts.
+A command to run when ggwm starts.
 .RE
 .P
 .B ShutdownCommand
 .RS
-A command to run when JWM exits.
+A command to run when ggwm exits.
 .RE
 .P
 .B TitleButtonOrder
