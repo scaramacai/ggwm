@@ -363,36 +363,6 @@
 #define JXGetGeometry( a, b, c, d, e, f, g, h, i ) \
    JFUNC9(XGetGeometry, a, b, c, d, e, f, g, h, i)
 
-/* XFT */
-
-#define JXftFontOpenName( a, b, c ) JFUNC3(XftFontOpenName, a, b, c)
-
-#define JXftFontOpenXlfd( a, b, c ) JFUNC3(XftFontOpenXlfd, a, b, c)
-
-#define JXftDrawCreate( a, b, c, d ) JFUNC4(XftDrawCreate, a, b, c, d)
-
-#define JXftDrawDestroy( a ) JFUNC1(XftDrawDestroy, a)
-
-#define JXftTextExtentsUtf8( a, b, c, d, e ) \
-   JFUNC5(XftTextExtentsUtf8, a, b, c, d, e)
-
-#define JXftDrawChange( a, b ) JFUNC2(XftDrawChange, a, b)
-
-#define JXftDrawSetClipRectangles( a, b, c, d, e ) \
-   JFUNC5(XftDrawSetClipRectangles, a, b, c, d, e)
-
-#define JXftDrawStringUtf8( a, b, c, d, e, f, g ) \
-   JFUNC7(XftDrawStringUtf8, a, b, c, d, e, f, g)
-
-#define JXftColorFree( a, b, c, d ) JFUNC4(XftColorFree, a, b, c, d)
-
-#define JXftColorAllocValue( a, b, c, d, e ) \
-   JFUNC5(XftColorAllocValue, a, b, c, d, e)
-
-#define JXftFontClose( a, b ) JFUNC2(XftFontClose, a, b)
-
-#define JXftDrawSetClip( a, b ) JFUNC2(XftDrawSetClip, a, b)
-
 /* Xrender */
 
 #define JXRenderQueryExtension( a, b, c ) \

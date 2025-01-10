@@ -17,7 +17,7 @@ The goals of the project are mainly focused on reducing dependecies on external 
 
 Obviously this would also imply that some of the feature one finds in jwm, are not available in ggwm, but the trade-off is good to me.
 
-At present, apart from the change in managing Xft fonts, ggwm natively supports svg images and icons thanks to [nanosvg](https://github.com/memononen/nanosvg). This amount to have some svg that cannot be rendered or that can only partially renedered, but in practice I never found a svg icon that fails with nanosvg. 
+At present, apart from the change in managing TTF fonts, ggwm natively supports svg images and icons thanks to [nanosvg](https://github.com/memononen/nanosvg). This amount to have some svg that cannot be rendered or that can only partially renedered, but in practice I never found a svg icon that fails with nanosvg. 
 
 The canonical libraries for png and jpeg formats have been removed as well, in favour of the single file
  image loader [stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h).
@@ -25,11 +25,10 @@ The canonical libraries for png and jpeg formats have been removed as well, in f
 If available and not disabled at compile time, ggwm  will also use
 the following libraries:
 
+ - libXrender for the render extension. In this case, True TYpe fonts will be used, via libschrift.
  - fribidi for bi-directional text support.
  - libXext for the shape extension.
- - libXrender for the render extension.
  - libXmu for rounded corners.
- - libXft for anti-aliased and true type fonts.
  - libXinerama for multiple head support.
  - libXpm for XPM icons and backgrounds.
 

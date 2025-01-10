@@ -124,12 +124,12 @@ char ParseColor(const char *value, XColor *c);
  */
 void GetColor(XColor *c);
 
-#ifdef USE_XFT
-/** Get an XFT color.
- * @param type The color whose XFT color to get.
- * @return The XFT color.
+#ifdef USE_XRENDER
+/** Get an XRender color.
+ * @param type The color whose XRender color to get.
+ * @return The XRender color.
  */
-XftColor *GetXftColor(ColorType type);
+XRenderColor *GetXRenderColor(ColorType type);
 #endif
 
 #endif /* COLOR_H */

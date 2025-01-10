@@ -121,9 +121,9 @@ static double font_scale_points(SFT_X * sft_x, double points)
 /* This is mostly a try and guess */
 	int dpi = 96; //points per inch of the screen
 	double requested_points = points * dpi / 72; // 1 point = 1/72 inch 
-	double fheight = sft_x->ascent + sft_x->descent;
+//	double fheight = sft_x->ascent + sft_x->descent;
 //	double fheight = (2*sft_x->ascent + sft_x->descent)/2; //Mean value of asc+desc and asc only
-//	double fheight = sft_x->ascent; //This seems to be the one we are more accustomed
+	double fheight = sft_x->ascent; //This seems to be the one we are more accustomed
 	double scale = requested_points / fheight;
 	return scale;
 }
@@ -220,7 +220,7 @@ SFT * SFT_create_from_file(const char * filename)
 		return NULL;
 	}
 
-	sft->xScale = 1.; //set an arbitrary scale
+	sft->xScale = 10.0; //set an arbitrary scale
 	sft->yScale = sft->xScale;
 	sft->flags  = SFT_DOWNWARD_Y;
 
@@ -310,7 +310,8 @@ int SFT_X_get_string_width(SFT_X * sft_x, char * text_string)
 	return width;
 }
 
-int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * fg, SFT_X * sft_x, char * text_string)
+int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * fg,
+                                  SFT_X * sft_x, char * text_string, int max_width)
 {
 	XRectangle rect;
 	Region r;
@@ -337,13 +338,15 @@ int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * 
 		add_glyph(dpy, glyphset, sft_x, codepoints[i], &previous, &width);
 	}
 	rect.x = x - 1;
-	rect.y = (int) (y - sft_x->ascent);
-	rect.width = width + 2;
+	rect.y = (int) (y + sft_x->ascent) -1;
+	rect.width = width;
+	if (rect.width > max_width) rect.width = max_width;
+	rect.width += 2;
 	rect.height = (int) ((sft_x->ascent+sft_x->descent))+2;
 	r = XCreateRegion();
 	XUnionRectWithRegion(&rect, r , r);
-	XRenderSetPictureClipRegion(dpy, topic,  r);
-	XRenderCompositeString32(dpy, PictOpOver, fgpic, topic, NULL, glyphset, 0, 0, x, y, codepoints, n);
+//	XRenderSetPictureClipRegion(dpy, topic,  r);
+	XRenderCompositeString32(dpy, PictOpOver, fgpic, topic, NULL, glyphset, 0, 0, x, y + sft_x->ascent, codepoints, n);
 
 	XRenderFreePicture(dpy, fgpic);
 	XRenderFreePicture(dpy, topic);

@@ -12,6 +12,7 @@
 #include "main.h"
 #include "error.h"
 #include "misc.h"
+#include "schrift_x11.h"
 
 #ifdef USE_ICONV
 #  ifdef HAVE_LANGINFO_H
@@ -49,6 +50,8 @@ static iconv_t fromUTF8 = (iconv_t)-1;
 static iconv_t toUTF8 = (iconv_t)-1;
 #endif
 
+SFT_X * sft_x = NULL;
+XRenderColor fg = { 0xffff, 0xffff, 0xffff, 0xffff };
 #ifdef USE_XFT
 static XftFont *fonts[FONT_COUNT];
 #else
@@ -63,6 +66,8 @@ void InitializeFonts(void)
 #endif
    unsigned int x;
 
+   sft_x = SFT_X_create_from_file("alegreya-sans-v25-latin_latin-ext-regular.ttf", 20.0, 1.0);
+ //  sft_x = SFT_X_create_from_file("chivo-v18-latin_latin-ext-300.ttf", 10.0, 1.0);
    for(x = 0; x < FONT_COUNT; x++) {
       fonts[x] = NULL;
       fontNames[x] = NULL;
@@ -85,7 +90,6 @@ void InitializeFonts(void)
 /** Startup font support. */
 void StartupFonts(void)
 {
-
    unsigned int x;
 
    /* Inherit unset fonts from the tray for tray items. */
@@ -97,6 +101,7 @@ void StartupFonts(void)
       }
    }
 
+return;
 #ifdef USE_XFT
 
    for(x = 0; x < FONT_COUNT; x++) {
@@ -246,6 +251,9 @@ void ReleaseUTF8String(char *utf8String)
 /** Get the width of a string. */
 int GetStringWidth(FontType ft, const char *str)
 {
+int sft_w;
+sft_w =  SFT_X_get_string_width(sft_x, str);
+return sft_w;
 #ifdef USE_XFT
    XGlyphInfo extents;
 #endif
@@ -304,6 +312,7 @@ int GetStringWidth(FontType ft, const char *str)
 /** Get the height of a string. */
 int GetStringHeight(FontType ft)
 {
+return sft_x->ascent + sft_x->descent;
    Assert(fonts[ft]);
    return fonts[ft]->ascent + fonts[ft]->descent;
 }
@@ -325,6 +334,10 @@ void SetFont(FontType type, const char *value)
 void RenderString(Drawable d, FontType font, ColorType color,
                   int x, int y, int width, const char *str)
 {
+XRenderColor * sft_color = GetXRenderColor(color);
+SFT_X_draw_string32(display, d, x, y,  sft_color, sft_x, str, width);
+free(sft_color);
+return;
    XRectangle rect;
    Region renderRegion;
    int len;

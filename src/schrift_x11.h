@@ -54,7 +54,8 @@ SFT * SFT_X_get_sft(SFT_X * sft_x);
 
 int SFT_X_get_string_width(SFT_X * sft_x, char * text_string);
 
-int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * fg, SFT_X * sft_x, char * text_string);
+int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * fg,
+                                 SFT_X * sft_x, char * text_string, int max_width);
 
 void SFT_X_free(SFT_X * sft_x);
 
