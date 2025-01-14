@@ -32,8 +32,10 @@
 
 #ifndef __SDS_H
 #define __SDS_H
-
-#define SDS_MAX_PREALLOC (1024*1024)
+/* The original implementation
+   #define SDS_MAX_PREALLOC (1024*1024)
+   but we deal with small strings    */
+#define SDS_MAX_PREALLOC (1024*4)
 extern const char *SDS_NOINIT;
 
 #include <sys/types.h>

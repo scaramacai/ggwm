@@ -252,7 +252,7 @@ SFT_X * SFT_X_create_from_file(const char * filename, double size, double xy_fac
 	double scale = font_scale_points(sft_x, size);
 	sft->yScale *= scale;
 	sft->xScale = sft->yScale;
-	sft->yScale *= xy_factor;
+	sft->yScale *= xy_factor; // need to move before
 
 /* We need to recompute lmetrics now! */
 	sft_lmetrics(sft, &v_metrics);
@@ -328,7 +328,7 @@ int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * 
 	fmt = XRenderFindStandardFormat(dpy, PictStandardRGB24);
 //	fmt = XRenderFindStandardFormat(dpy, PictStandardARGB32);
 	Picture fgpic = XRenderCreatePicture(dpy, fgpix, fmt, CPRepeat, &attr);
-	XRenderFillRectangle(dpy, PictOpSrc, fgpic, fg, 0, 0, 1, 1);
+	XRenderFillRectangle(dpy, PictOpSrc, fgpic, fg, 0, 0, 200, 200);
 
 	fmt = XRenderFindStandardFormat(dpy, PictStandardA8);
 	GlyphSet glyphset = XRenderCreateGlyphSet(dpy, fmt);
