@@ -306,23 +306,23 @@ fprintf(stderr,"Need font name: %s at size %g\n", ns->name, ns->size); fflush(st
          if(JUNLIKELY(!fonts[x])) {
             fprintf(stderr, "Warning: could not load font: %s\n", fontNames[x]);
          }
-         if(!fonts[x]) {
-            fprintf(stderr, "%s: replacing with default font %s at size %g\n", fontNames[x], DEFAULT_FONT, ns->size);
-            default_name = sdsnew(DEFAULT_FONT);
-            default_name = sdscat(default_name,".ttf");
-            if(DEFAULT_FONT[0] == '/') {  //We assume this is an absolute path
-               fonts[x] = SFT_X_create_from_file(DEFAULT_FONT, ns->size, 1.0);
-            } else { //search in FONT_DIRS
-               fonts[x] = search_font_in_default_paths(default_name, ns->size, expanded_paths);
-            } 
-            sdsfree(default_name);
-        } 
-        FreeNameSize(ns);   
-        if(JUNLIKELY(!fonts[x])) {
-           fprintf(stderr,"could not load the default font: %s\n", DEFAULT_FONT);
-        }
-        
+         FreeNameSize(ns);   
       }
+      if(!fonts[x]) {
+         fprintf(stderr, "%s: replacing with default font %s at size %g\n", fontNames[x], DEFAULT_FONT, DEFAULT_SIZE);
+         default_name = sdsnew(DEFAULT_FONT);
+         default_name = sdscat(default_name,".ttf");
+         if(DEFAULT_FONT[0] == '/') {  //We assume this is an absolute path
+            fonts[x] = SFT_X_create_from_file(default_name, DEFAULT_SIZE, 1.0);
+         } else { //search in FONT_DIRS
+            fonts[x] = search_font_in_default_paths(default_name, DEFAULT_SIZE, expanded_paths);
+         } 
+         sdsfree(default_name);
+     } 
+     if(JUNLIKELY(!fonts[x])) {
+        fprintf(stderr,"could not load the default font: %s\n", DEFAULT_FONT);
+     }
+        
    }
    free_expanded_paths(expanded_paths);
 
@@ -461,6 +461,10 @@ int GetStringWidth(FontType ft, const char *str)
 int sft_w;
 sft_w =  SFT_X_get_string_width(fonts[ft], str);
 return sft_w;
+if(ft == 1)
+sft_w =  SFT_X_get_string_width(sft_x1, str);
+else
+sft_w =  SFT_X_get_string_width(sft_x3, str);
    XGlyphInfo extents;
 #endif
 #ifdef USE_FRIBIDI
@@ -516,6 +520,10 @@ return sft_w;
 /** Get the height of a string. */
 int GetStringHeight(FontType ft)
 {
+//if(ft == 1)
+  // return sft_x1->ascent + sft_x1->descent;
+//else
+//   return sft_x3->ascent + sft_x3->descent;
    Assert(fonts[ft]);
    return fonts[ft]->ascent + fonts[ft]->descent;
 }
@@ -624,12 +632,11 @@ rect.width =  SFT_X_get_string_width(fonts[font], str);
    JXSetRegion(display, gc, renderRegion);
 XRenderColor * sft_color = GetXRenderColor(color);
 fprintf(stderr,"Drawing string %s at %d,%d with font %s type %d\n", str,x,y, fonts[font]->filename,font);
-if(font > 3) font=3;
-if(font == 1)
-SFT_X_draw_string32(display, d, x, y,  sft_color, sft_x1, str, width);
-else if(font==3)
-SFT_X_draw_string32(display, d, x, y,  sft_color, sft_x3, str, width);
-else
+//if(font == 1)
+//SFT_X_draw_string32(display, d, x, y,  sft_color, sft_x1, str, width);
+//else if(font==3)
+//SFT_X_draw_string32(display, d, x, y,  sft_color, sft_x3, str, width);
+//else
 SFT_X_draw_string32(display, d, x, y,  sft_color, fonts[font], str, width);
 free(sft_color);
 //   JXSetFont(display, gc, fonts[font]->fid);
