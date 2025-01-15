@@ -102,41 +102,38 @@ static sds *font_expanded_paths(void)
 //  for (i = 0; i < dim_home; i++) {
   j = 0;
   if(home) {
-     i = 0;
-     while(FONT_DIRS_HOME[i]) {
+     i = -1;
+     while(FONT_DIRS_HOME[++i]) {
   fprintf(stderr,"In font_expanded_path: FONT_DIRS_HOME[%d] = %s\n", i, FONT_DIRS_HOME[i]); fflush(stderr);
         result[j] = sdsdup(home);
         result[j] = sdscatfmt(result[j], "%s%s","/",FONT_DIRS_HOME[i]);
   fprintf(stderr,"In font_expanded_path: result[%d] = %s\n", j, result[j]); fflush(stderr);
 //     free(path);
   fprintf(stderr,"In font_expanded_path FONT_DIRS_HOME: iterazione %d\n", i); fflush(stderr);
-        i++;
         j++;
      }
      sdsfree(home);   
   }   
   if(xdg) {
-     i = 0;
-     while(FONT_DIRS_XDG[i]) {
+     i = -1;
+     while(FONT_DIRS_XDG[++i]) {
   fprintf(stderr,"In font_expanded_path: FONT_DIRS_XDG[%d] = %s\n", i, FONT_DIRS_XDG[i]); fflush(stderr);
         result[j] = sdsdup(home);
         result[j] = sdscatfmt(result[j], "%s%s","/",FONT_DIRS_XDG[i]);
   fprintf(stderr,"In font_expanded_path: result[%d] = %s\n", j, result[j]); fflush(stderr);
 //     free(path);
   fprintf(stderr,"In font_expanded_path FONT_DIRS_XDG: iterazione %d\n", i); fflush(stderr);
-        i++;
         j++;
      }
      sdsfree(xdg);   
   }   
-  i = 0;
-  while(FONT_DIRS_SYS[i]) {
+  i = -1;
+  while(FONT_DIRS_SYS[++i]) {
   fprintf(stderr,"In font_expanded_path: FONT_DIRS_SYS[%d] = %s\n", i, FONT_DIRS_SYS[i]); fflush(stderr);
      result[j] = sdsnew(FONT_DIRS_SYS[i]);
   fprintf(stderr,"In font_expanded_path: result[%d] = %s\n", j, result[j]); fflush(stderr);
 //     free(path);
   fprintf(stderr,"In font_expanded_path FONT_DIRS_SYS: iterazione %d\n", i); fflush(stderr);
-     i++;
      j++;
   }
 
@@ -146,8 +143,8 @@ static sds *font_expanded_paths(void)
 
 static void free_expanded_paths(sds *path)
 {
-  unsigned int i = 0;
-  while(path[i++]) sdsfree(path[i]);
+  unsigned int i = -1;
+  while(path[++i]) sdsfree(path[i]);
   free(path);
 }
   
@@ -187,14 +184,13 @@ static SFT_X * search_font_in_default_paths(sds name, double size, sds * paths)
   unsigned int i;
   sds path;
   SFT_X * font = NULL;
-  i = 0;
-  while(paths[i]) {
+  i = -1;
+  while(paths[++i]) {
     path = sdsdup(paths[i]);
     path = sdscatsds(path, name);
     font = SFT_X_create_from_file(path, size, 1.0);
     sdsfree(path);
     if(font) break; 
-    i++;
   }
   return font;
 }
@@ -309,7 +305,7 @@ fprintf(stderr,"Need font name: %s at size %g\n", ns->name, ns->size); fflush(st
          FreeNameSize(ns);   
       }
       if(!fonts[x]) {
-         fprintf(stderr, "%s: replacing with default font %s at size %g\n", fontNames[x], DEFAULT_FONT, DEFAULT_SIZE);
+         fprintf(stderr, "Font type %d: Using default font %s at size %g\n", x, DEFAULT_FONT, DEFAULT_SIZE);
          default_name = sdsnew(DEFAULT_FONT);
          default_name = sdscat(default_name,".ttf");
          if(DEFAULT_FONT[0] == '/') {  //We assume this is an absolute path
