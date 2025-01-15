@@ -337,15 +337,22 @@ int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * 
 	for (int i = 0; i < n; i++) {
 		add_glyph(dpy, glyphset, sft_x, codepoints[i], &previous, &width);
 	}
-	rect.x = x - 1;
-	rect.y = (int) (y + sft_x->ascent) -1;
+	rect.x = x;
+	rect.y = y;
 	rect.width = width;
 	if (rect.width > max_width) rect.width = max_width;
 	rect.width += 2;
-	rect.height = (int) ((sft_x->ascent+sft_x->descent))+2;
+	rect.height = (int) ((sft_x->ascent+sft_x->descent));
 	r = XCreateRegion();
 	XUnionRectWithRegion(&rect, r , r);
-//	XRenderSetPictureClipRegion(dpy, topic,  r);
+    /* This is for debugging clip region: draw a rectangle around the region supposed to contain the string */
+    //XRenderColor fg1 = { 0x00ff, 0xffaa, 0xccaa, 0xFFFF } ;//, bg = { 0, 0, 0, 0xffff};
+    //XRenderFillRectangle(dpy, PictOpOver, topic, &fg1, x  , (int) (y + sft_x->ascent), width  , (int) (sft_x->ascent+sft_x->descent) + 1);
+    //XRenderFillRectangle(dpy, PictOpOver, topic, &fg1, x  , (int) (y - sft_x->ascent), width  , (int) (sft_x->ascent+sft_x->descent) + 1);
+    //XRenderColor fg1 = { 0x5555, 0xa4a4, 0x1616, 0xFFFF } ;//, bg = { 0, 0, 0, 0xffff};
+    //XRenderFillRectangle(dpy, PictOpOver, topic, &fg1, x  , (int) (y), rect.width  , (int) (sft_x->ascent+sft_x->descent));
+    /* End debugging clip region: draw a rectangle around the region supposed to contain the string */
+	XRenderSetPictureClipRegion(dpy, topic,  r);
 	XRenderCompositeString32(dpy, PictOpOver, fgpic, topic, NULL, glyphset, 0, 0, x, y + sft_x->ascent, codepoints, n);
 
 	XRenderFreePicture(dpy, fgpic);

@@ -28,7 +28,7 @@
 
 #ifdef USE_XRENDER
 static const char *DEFAULT_FONT = "alegreya-sans-v25-latin_latin-ext-regular";
-static const double DEFAULT_SIZE = 13.0;
+static const double DEFAULT_SIZE = 12.0;
 static const char *SIZE_SEPARATOR = "::"; //It is assumed that the file name itself does not contain the SIZE_SEPARATOR substring!
 static const char * const FONT_DIRS_HOME[] = {
     ".config/ggwm/fonts/",
@@ -288,7 +288,7 @@ fprintf(stderr,"Printing dir paths\n"); fflush(stderr);
 fprintf(stderr,"End Printing dir paths\n"); fflush(stderr);
 // This is only for testing
 fprintf(stderr,"FONT_COUNT %d\n", FONT_COUNT);
-  SetFont( 1,  "sansita-v11-latin-regular::18");
+//  SetFont( 1,  "sansita-v11-latin-regular::18");
 //   fontNames[1] = "chivo-v18-latin_latin-ext-500::12";
 //   fontNames[2] = "jetbrains-mono/JetBrainsMono-Medium::11";
 //   fontNames[3] = "/usr/share/fonts/jetbrains-mono/JetBrainsMono-Medium::10";
