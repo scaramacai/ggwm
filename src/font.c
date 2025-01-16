@@ -2,6 +2,8 @@
  * @file font.c
  * @author Joe Wingbermuehle
  * @date 2004-2006
+ * @author Scaramacai
+ * @date 2024-2025
  *
  * @brief Functions to handle fonts.
  *

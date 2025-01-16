@@ -1,8 +1,10 @@
 /*
- * A simple application that shows how to
- * use libschrift with X11 via XRender.
- * See LICENSE file for copyright and license details.
- * Contributed by Andor Badi.
+ * Structures and functions to deal with libschrift and X11
+ *
+ * @author Scaramacai
+ * @date 2024-2025
+ * @licence MIT
+ *
  */
 
 #define _GNU_SOURCE // stupido gcc che altrimenti non riconosce realpath
@@ -309,6 +311,15 @@ int SFT_X_get_string_width(SFT_X * sft_x, char * text_string)
 
 	return width;
 }
+
+/* ***************************************************
+ * SFT_X_draw_string32
+ *
+ * Based on "A simple application that shows how to
+ * use libschrift with X11 via XRender."
+ * contributed to libschrift by Andor Badi.
+ *
+ */
 
 int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * fg,
                                   SFT_X * sft_x, char * text_string, int max_width)

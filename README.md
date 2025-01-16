@@ -27,8 +27,12 @@ This is still at an alpha state, but things are going in the right direction and
 I removed the dependecies on libXft and FontConfig, while libXrender is still needed to render strings with ttf fonts.
 However  I plan to remove this dependency in the future, so that ggwm could be used also on servers without the XRender extension.
 
-I also included in the code the ["Simple Dynamic Strings library for C"](https://github.com/antirez/sds) by Salvatore Sanfilippo, to simplify manipulating strings. For now, its use was limited to the files I changed or added, but 
+I also included in the code the ["Simple Dynamic Strings library for C"](https://github.com/antirez/sds) by Salvatore Sanfilippo, to simplify manipulating strings. For now, its use was limited to the files I changed or added, but it would be nice to replace with sds code here and there, where strings are used.
 
+if you download from Github use the **schrift-branch** to get the updated code.
+
+To build JWM you will need a C compiler (gcc works), X11, and the
+"development headers" for X11 and Xlib.
 If available and not disabled at compile time, ggwm  will also use
 the following libraries:
 
