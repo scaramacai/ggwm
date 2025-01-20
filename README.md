@@ -1,5 +1,6 @@
 ggwm
 ==============================================================================
+**NOTE:** This is the mirror of my private fossil repository
 
 **ggwm** is my personal fork of the excellent window manager [JWM](https://github.com/joewing/jwm) by Joe Wingbermuehle.
 
@@ -22,16 +23,18 @@ The first step in the project was about icon and images. At present, ggwm native
 The canonical libraries for png and jpeg formats have been removed as well, in favour of the single file
  image loader [stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h).
 
-A big step in the project was using [libschrift](https://github.com/tomolt/libschrift) by Thomas Holtmann, to deal with True Type fonts.
-This is still at an alpha state, but things are going in the right direction and now ggwm with libschrift can be used for everyday work.
+A big step in the project was using [libschrift](https://github.com/tomolt/libschrift) by Thomas Holtmann, to deal with True Type fonts.  
+This is still at an alpha state, but things are going in the right direction and now ggwm with libschrift can be used for everyday work.  
 I removed the dependecies on libXft and FontConfig, while libXrender is still needed to render strings with ttf fonts.
-However  I plan to remove this dependency in the future, so that ggwm could be used also on servers without the XRender extension.
+However  I plan to remove this dependency in the future, so that ggwm could be used also on servers without the XRender extension.   
+At present ggwm is usable, but there is a strange bug I need to investigate, so that only some configurations of fonts works. On the other hand, when ggwm works, it works well, and I'm using it every day.   
+For details on the configuration, please see the file README.schrift.md in this directory.
 
 I also included in the code the ["Simple Dynamic Strings library for C"](https://github.com/antirez/sds) by Salvatore Sanfilippo, to simplify manipulating strings. For now, its use was limited to the files I changed or added, but it would be nice to replace with sds code here and there, where strings are used.
 
 if you download from Github use the **schrift-branch** to get the updated code.
 
-To build JWM you will need a C compiler (gcc works), X11, and the
+To build ggwm you will need a recent C compiler (gcc works), X11, and the
 "development headers" for X11 and Xlib.
 If available and not disabled at compile time, ggwm  will also use
 the following libraries:
