@@ -297,7 +297,7 @@ int SFT_scale_xy (SFT * sft, double size, double xy_factor)
 	return 0;
 }
 
-int SFT_X_get_string_width(SFT_X * sft_x, char * text_string)
+int SFT_X_get_string_width(SFT_X * sft_x, const char * text_string)
 {
 	int n = strlen(text_string) + 1; // for terminating \0
 	unsigned codepoints[n];
@@ -322,7 +322,7 @@ int SFT_X_get_string_width(SFT_X * sft_x, char * text_string)
  */
 
 int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * fg,
-                                  SFT_X * sft_x, char * text_string, int max_width)
+                        SFT_X * sft_x, const char * text_string, int max_width)
 {
 	XRectangle rect;
 	Region r;
@@ -339,7 +339,7 @@ int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * 
 	fmt = XRenderFindStandardFormat(dpy, PictStandardRGB24);
 //	fmt = XRenderFindStandardFormat(dpy, PictStandardARGB32);
 	Picture fgpic = XRenderCreatePicture(dpy, fgpix, fmt, CPRepeat, &attr);
-	XRenderFillRectangle(dpy, PictOpSrc, fgpic, fg, 0, 0, 200, 200);
+//	XRenderFillRectangle(dpy, PictOpSrc, fgpic, fg, 0, 0, 200, 200);
 
 	fmt = XRenderFindStandardFormat(dpy, PictStandardA8);
 	GlyphSet glyphset = XRenderCreateGlyphSet(dpy, fmt);
@@ -363,6 +363,7 @@ int SFT_X_draw_string32(Display * dpy, Drawable d, int x, int y, XRenderColor * 
     //XRenderColor fg1 = { 0x5555, 0xa4a4, 0x1616, 0xFFFF } ;//, bg = { 0, 0, 0, 0xffff};
     //XRenderFillRectangle(dpy, PictOpOver, topic, &fg1, x  , (int) (y), rect.width  , (int) (sft_x->ascent+sft_x->descent));
     /* End debugging clip region: draw a rectangle around the region supposed to contain the string */
+	XRenderFillRectangle(dpy, PictOpSrc, fgpic, fg, 0, 0, rect.width, rect.height);
 	XRenderSetPictureClipRegion(dpy, topic,  r);
 	XRenderCompositeString32(dpy, PictOpOver, fgpic, topic, NULL, glyphset, 0, 0, x, y + sft_x->ascent, codepoints, n);
 
