@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+<JWM>
+
+    <!-- The root menu. -->
+    <RootMenu onroot="12">
+        <Program icon="icona_tabbed_4" label="ggTabbed Terminal">/home/alpine/.local/bin/st-tabbed-gigi</Program>
+        <Separator/>
+        <Menu icon="folder" label="Applications">
+            <Program icon="icona_terminale" label="Terminal">/home/alpine/.local/bin/myst</Program>
+            <Program icon="icona_tabbed_4" label="Tabbed Terminal">/home/alpine/.local/bin/st-tabbed-gigi</Program>
+            <Program icon="web-browser" label="Firefox">firefox-esr</Program>
+            <Program icon="vifm" label="VIfm File Manager">/home/alpine/.local/bin/myst \
+                      -t 'VIfm File Manager' -f 'Jetbrain Mono Medium-15' -e vifm</Program>
+            <Program icon="Vimlogo" label="GVim">gvim</Program>
+            <Program icon="icona_calcolatrice" label="Calculator">xcalc</Program>
+            <Program icon="sound" label="Audacious">audacious</Program>
+            <Program icon="gimp" label="Gimp">gimp</Program>
+            <Program icon="claws-mail" label="Mail">claws-mail</Program>
+        </Menu>
+        <Menu icon="folder" label="Utilities">
+            <Program icon="icona_font_latin_semitrasp" label="Fonts">xfontsel</Program>
+            <Program icon="info" label="Window Properties">
+                xprop | xmessage -file -
+            </Program>
+            <Program icon="info" label="Window Information">
+                xwininfo | xmessage -file -
+            </Program>
+        </Menu>
+        <Separator/>
+        <Program icon="lock" label="Lock">
+           xscreensaver-command -lock
+        </Program>
+        <Separator/>
+        <Restart label="Restart" icon="icona_riavvia"/>
+        <Exit label="Exit" confirm="true" icon="icona_logout_2"/>
+    </RootMenu>
+
+    <!-- Options for program groups. -->
+    <Group>
+        <Option>tiled</Option>
+    </Group>
+    <Group>
+        <Name>xterm</Name>
+        <Option>vmax</Option>
+    </Group>
+    <Group>
+        <Name>xclock</Name>
+        <Option>drag</Option>
+        <Option>notitle</Option>
+    </Group>
+
+    <!-- Tray at the bottom. -->
+    <Tray x="0" y="-1" height="22" autohide="off" delay="1000">
+
+        <TrayButton icon="icona_menu_lime_arancio"  label="Menu" popup="Menu">root:1</TrayButton>
+        <Spacer width="2"/>
+        <TrayButton icon="icona_desktop" popup="Hide/show desktop">showdesktop</TrayButton>
+        <Spacer width="2"/>
+
+
+        <TaskList maxwidth="256"/>
+
+        <Pager labeled="true"/>
+        <Spacer width="2"/>
+        <!-- <Clock format="%l:%M %p"><Button mask="123">exec:xclock</Button></Clock> -->
+        <Clock format="%H:%M"></Clock>
+        <Spacer width="1"/>
+
+    </Tray>
+
+    <!-- Visual Styles -->
+    <WindowStyle decorations="flat">
+	     <Font>chivo-v18-latin_latin-ext-500::10</Font>  
+        <Width>1</Width>
+        <Height>16</Height>
+        <Corner>0</Corner>
+        <Foreground>#FFFFFF</Foreground>
+        <Background>#37536e</Background>
+        <Opacity>0.5</Opacity>
+        <Active>
+            <Foreground>#22FF44</Foreground>
+            <Background>#223344</Background>
+            <Opacity>1.0</Opacity>
+        </Active>
+    </WindowStyle>
+    <MenuStyle decorations="flat">
+        <Font>sansita-v11-latin-regular::16</Font>
+  <!--    <Font>/usr/share/fonts/jetbrains-mono/JetBrainsMono-Regular::16</Font>  --> 
+        <Foreground>#FFFFFF</Foreground>
+        <Background>#445566</Background>
+        <Active>
+            <Foreground>#FFFFFF</Foreground>
+            <Background>#0077CC</Background>
+        </Active>
+        <Opacity>0.85</Opacity>
+    </MenuStyle>
+    <PopupStyle>
+<!--	        <Font>alegreya-sans-v25-latin_latin-ext-regular::16</Font> -->
+        <Foreground>#000000</Foreground>
+        <Background>#999999</Background>
+    </PopupStyle>
+
+    <TrayStyle decorations="motif">
+	     <Font>sansita-v11-latin-regular::10</Font>  
+        <Background>#445566</Background>
+        <Foreground>#FFFFFF</Foreground>
+        <Opacity>0.75</Opacity>
+    </TrayStyle>
+    <PagerStyle>
+	    <!-- <Font>alegreya-sans-v25-latin_latin-ext-regular::12</Font> -->  
+        <Foreground>#555555</Foreground>
+        <Background>#333333</Background>
+        <Text>#FFFFFF</Text>
+        <Active>
+            <Foreground>#0077CC</Foreground>
+            <Background>#004488</Background>
+        </Active>
+    </PagerStyle>
+
+    <ClockStyle>
+	    <Font>chivo-v18-latin_latin-ext-500::13</Font> 
+        <Background>#445566</Background>
+        <Foreground>#44FF33</Foreground>
+    </ClockStyle>
+    <TaskListStyle list="all" group="true">
+	    <!--  <Font>sansita-v11-latin-regular::12</Font> -->
+      <Active>
+        <Foreground>#FFFFFF</Foreground>
+        <Background>#334455</Background>
+      </Active>
+      <Foreground>#cccccc</Foreground>
+      <Background>#223344</Background>
+    </TaskListStyle>
+    <TrayButtonStyle>
+	    <!--   <Font>alegreya-sans-v25-latin_latin-ext-regular::14</Font> -->
+    </TrayButtonStyle>
+
+    <!-- Path where icons can be found.
+         IconPath can be listed multiple times to allow searching
+         for icons in multiple paths.
+      -->
+    <IconPath>
+      /home/alpine/.config/ggwm/icons
+    </IconPath>
+    <IconPath>
+      /usr/share/icons/Faenza/apps/scalable
+    </IconPath>
+    <IconPath>
+      /usr/share/icons/Faenza/mimetypes/scalable
+    </IconPath>
+    <IconPath>
+      /usr/share/icons/hicolor/scalable/apps
+    </IconPath>
+    <DefaultIcon>
+      default
+    </DefaultIcon>
+
+    <!-- Virtual Desktops -->
+    <!-- Desktop tags can be contained within Desktops for desktop names. -->
+    <Desktops width="4" height="1">
+        <!-- Default background. Note that a Background tag can be
+              contained within a Desktop tag to give a specific background
+              for that desktop.
+         -->
+        <Background type="solid">#446688</Background>
+    </Desktops>
+
+    <!-- Double click speed (in milliseconds) -->
+    <DoubleClickSpeed>400</DoubleClickSpeed>
+
+    <!-- Double click delta (in pixels) -->
+    <DoubleClickDelta>2</DoubleClickDelta>
+
+    <!-- The focus model (sloppy or click) -->
+    <FocusModel>click</FocusModel>
+
+    <!-- The snap mode (none, screen, or border) -->
+    <SnapMode distance="10">border</SnapMode>
+
+    <!-- The move mode (outline or opaque) -->
+    <MoveMode>opaque</MoveMode>
+
+    <!-- The resize mode (outline or opaque) -->
+    <ResizeMode>opaque</ResizeMode>
+
+    <!-- Key bindings -->
+    <Key key="Up">up</Key>
+    <Key key="Down">down</Key>
+    <Key key="Right">right</Key>
+    <Key key="Left">left</Key>
+    <Key key="h">left</Key>
+    <Key key="j">down</Key>
+    <Key key="k">up</Key>
+    <Key key="l">right</Key>
+    <Key key="Return">select</Key>
+    <Key key="Escape">escape</Key>
+
+    <Key mask="A" key="Tab">nextstacked</Key>
+    <Key mask="A" key="F4">close</Key>
+    <Key mask="A" key="#">desktop#</Key>
+    <Key mask="A" key="F1">root:1</Key>
+    <Key mask="A" key="F2">window</Key>
+    <Key mask="A" key="F10">maximize</Key>
+    <Key mask="A" key="Right">rdesktop</Key>
+    <Key mask="A" key="Left">ldesktop</Key>
+    <Key mask="A" key="Up">udesktop</Key>
+    <Key mask="A" key="Down">ddesktop</Key>
+
+    <!-- Mouse bindings -->
+    <Mouse context="root" button="4">ldesktop</Mouse>
+    <Mouse context="root" button="5">rdesktop</Mouse>
+
+    <Mouse context="title" button="1">move</Mouse>
+    <Mouse context="title" button="2">move</Mouse>
+    <Mouse context="title" button="3">window</Mouse>
+    <Mouse context="title" button="4">shade</Mouse>
+    <Mouse context="title" button="5">shade</Mouse>
+    <Mouse context="title" button="11">maximize</Mouse>
+
+    <Mouse context="icon" button="1">window</Mouse>
+    <Mouse context="icon" button="2">move</Mouse>
+    <Mouse context="icon" button="3">window</Mouse>
+    <Mouse context="icon" button="4">shade</Mouse>
+    <Mouse context="icon" button="5">shade</Mouse>
+
+    <Mouse context="border" button="1">resize</Mouse>
+    <Mouse context="border" button="2">move</Mouse>
+    <Mouse context="border" button="3">window</Mouse>
+
+    <Mouse context="close" button="-1">close</Mouse>
+    <Mouse context="close" button="2">move</Mouse>
+    <Mouse context="close" button="-3">close</Mouse>
+
+    <Mouse context="maximize" button="-1">maximize</Mouse>
+    <Mouse context="maximize" button="-2">maxv</Mouse>
+    <Mouse context="maximize" button="-3">maxh</Mouse>
+
+    <Mouse context="minimize" button="-1">minimize</Mouse>
+    <Mouse context="minimize" button="2">move</Mouse>
+    <Mouse context="minimize" button="-3">shade</Mouse>
+
+</JWM>
