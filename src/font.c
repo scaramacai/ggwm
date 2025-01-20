@@ -25,8 +25,6 @@
 #     include <iconv.h>
 #  endif
 #endif
-   SFT_X * sft_x1 = NULL;
-   SFT_X * sft_x3 = NULL;
 
 #ifdef USE_XRENDER
 static const char *DEFAULT_FONT = "alegreya-sans-v25-latin_latin-ext-regular";
@@ -53,14 +51,13 @@ typedef struct _NameSize {
     double size;
 } NameSize;
 
-static unsigned int get_font_dirs_dim(const char * const * dir)
+static unsigned int get_font_dirs_numel(const char * const * dir)
 {
-  unsigned int dim;
+  unsigned int numel;
   
-  dim = 0;
-  while(dir[dim]) dim++;
-fprintf(stderr, "Dimensione array: %d\n", dim);
-  return dim;
+  numel = 0;
+  while(dir[numel]) numel++;
+  return numel;
 }
 //static sds *font_expanded_paths(const char * const * dir)
 static sds *font_expanded_paths(void)
@@ -76,42 +73,33 @@ static sds *font_expanded_paths(void)
   sds home = NULL;
   sds xdg = NULL;
 
-  fprintf(stderr,"FONTS_DIR HOME  ");
-  dim_home = get_font_dirs_dim(FONT_DIRS_HOME);
-  fprintf(stderr,"FONTS_DIR XDG  ");
-  dim_xdg = get_font_dirs_dim(FONT_DIRS_XDG);
-  fprintf(stderr,"FONTS_DIR SYS  ");
-  dim_sys = get_font_dirs_dim(FONT_DIRS_SYS);
+  dim_home = get_font_dirs_numel(FONT_DIRS_HOME);
+  dim_xdg = get_font_dirs_numel(FONT_DIRS_XDG);
+  dim_sys = get_font_dirs_numel(FONT_DIRS_SYS);
 
   if(getenv("HOME")) {
      home = sdsnew(getenv("HOME"));
      dim += dim_home;
-  fprintf(stderr,"$HOME presente! HOME=%s\n", home);
   }
 
   if(getenv("XDG_CONFIG_HOME")) {
      xdg = sdsnew(getenv("XDG_CONFIG_HOME"));
      dim += dim_xdg;
-  fprintf(stderr,"$XDG_CONFIG_HOME presente! XDG_CONFIG_HOME=%s\n", home);
   }
-  dim += dim_sys;
-  fprintf(stderr,"Dimensioni totali array result: %d\n", dim);
 
+  dim += dim_sys;
+
+  /* create an array of sds terminated by a NULL element */
   result = (sds *) malloc((dim+1) * sizeof(sds));
   result[dim] = NULL;
-  fprintf(stderr,"Result ha dimensioni %ld\n", (dim * sizeof(sds)));
 
 //  for (i = 0; i < dim_home; i++) {
   j = 0;
   if(home) {
      i = -1;
      while(FONT_DIRS_HOME[++i]) {
-  fprintf(stderr,"In font_expanded_path: FONT_DIRS_HOME[%d] = %s\n", i, FONT_DIRS_HOME[i]); fflush(stderr);
         result[j] = sdsdup(home);
         result[j] = sdscatfmt(result[j], "%s%s","/",FONT_DIRS_HOME[i]);
-  fprintf(stderr,"In font_expanded_path: result[%d] = %s\n", j, result[j]); fflush(stderr);
-//     free(path);
-  fprintf(stderr,"In font_expanded_path FONT_DIRS_HOME: iterazione %d\n", i); fflush(stderr);
         j++;
      }
      sdsfree(home);   
@@ -119,23 +107,15 @@ static sds *font_expanded_paths(void)
   if(xdg) {
      i = -1;
      while(FONT_DIRS_XDG[++i]) {
-  fprintf(stderr,"In font_expanded_path: FONT_DIRS_XDG[%d] = %s\n", i, FONT_DIRS_XDG[i]); fflush(stderr);
         result[j] = sdsdup(home);
         result[j] = sdscatfmt(result[j], "%s%s","/",FONT_DIRS_XDG[i]);
-  fprintf(stderr,"In font_expanded_path: result[%d] = %s\n", j, result[j]); fflush(stderr);
-//     free(path);
-  fprintf(stderr,"In font_expanded_path FONT_DIRS_XDG: iterazione %d\n", i); fflush(stderr);
         j++;
      }
      sdsfree(xdg);   
   }   
   i = -1;
   while(FONT_DIRS_SYS[++i]) {
-  fprintf(stderr,"In font_expanded_path: FONT_DIRS_SYS[%d] = %s\n", i, FONT_DIRS_SYS[i]); fflush(stderr);
      result[j] = sdsnew(FONT_DIRS_SYS[i]);
-  fprintf(stderr,"In font_expanded_path: result[%d] = %s\n", j, result[j]); fflush(stderr);
-//     free(path);
-  fprintf(stderr,"In font_expanded_path FONT_DIRS_SYS: iterazione %d\n", i); fflush(stderr);
      j++;
   }
 
@@ -169,7 +149,6 @@ static NameSize * get_font_name_size(char * name)
    name_size->name = sdsdup((const sds) splitted[0]);
    name_size->size = size;
    sdsfreesplitres(splitted, count);
-   fprintf(stderr,"Requested font %s at size %g\n", name_size->name, name_size->size); fflush(stderr);
    return name_size;
 }
 
@@ -192,7 +171,10 @@ static SFT_X * search_font_in_default_paths(sds name, double size, sds * paths)
     path = sdscatsds(path, name);
     font = SFT_X_create_from_file(path, size, 1.0);
     sdsfree(path);
-    if(font) break; 
+    if(font) {
+       fprintf(stderr, "Font found with file %s. SFT_X points to %p\n", font->filename, (void*) font);
+       break;
+    }
   }
   return font;
 }
@@ -260,6 +242,10 @@ void StartupFonts(void)
 {
    unsigned int x;
 
+   for(x = 0; x < FONT_COUNT; x++) {
+	   if (fontNames[x]) fprintf(stderr, "Font type %d has name %s\n", x, fontNames[x]);
+	   else fprintf(stderr, "Font type %d still without name\n", x, fontNames[x]); }
+   fprintf(stderr, "\nBegin Loop for assigning type to inherited fonts\n\n");
    /* Inherit unset fonts from the tray for tray items. */
    for(x = 0; x < ARRAY_LENGTH(INHERITED_FONTS); x++) {
       const FontType dest = INHERITED_FONTS[x].dest;
@@ -269,45 +255,33 @@ void StartupFonts(void)
       }
    }
 
+   fprintf(stderr, "\nEnded Loop for inherited fonts\n\n");
+   for(x = 0; x < FONT_COUNT; x++) {
+	   if (fontNames[x]) fprintf(stderr, "Font type %d has name %s\n", x, fontNames[x]);
+	   else fprintf(stderr, "Font type %d still without name\n", x, fontNames[x]); }
+   fprintf(stderr, "\nBegin Loop for searching font\n\n");
 #ifdef USE_XRENDER
 
-fprintf(stderr,"In StartupFonts\n"); fflush(stderr);
    sds * expanded_paths = NULL;
    sds default_name = NULL;
    unsigned int i;
-fprintf(stderr,"Expanding dir paths\n"); fflush(stderr);
    expanded_paths = font_expanded_paths();
-fprintf(stderr,"Printing dir paths\n"); fflush(stderr);
-   i = 0;
-   while(expanded_paths[i]) {
-   fprintf(stderr, "expanded_paths[%d]: %s\n",i,expanded_paths[i]);
-      i++;
-   }
-fprintf(stderr,"End Printing dir paths\n"); fflush(stderr);
-// This is only for testing
-fprintf(stderr,"FONT_COUNT %d\n", FONT_COUNT);
-//  SetFont( 1,  "sansita-v11-latin-regular::18");
-//   fontNames[1] = "chivo-v18-latin_latin-ext-500::12";
-//   fontNames[2] = "jetbrains-mono/JetBrainsMono-Medium::11";
-//   fontNames[3] = "/usr/share/fonts/jetbrains-mono/JetBrainsMono-Medium::10";
-////////////////////////////////////////////////////
    for(x = 0; x < FONT_COUNT; x++) {
       if(fontNames[x]) {
-fprintf(stderr,"Got font name %d: %s\n", x, fontNames[x]); fflush(stderr);
          NameSize * ns = get_font_name_size(fontNames[x]);
-fprintf(stderr,"Need font name: %s at size %g\n", ns->name, ns->size); fflush(stderr);
          if(ns->name[0] == '/') {  //We assume this is an absolute path
             fonts[x] = SFT_X_create_from_file(ns->name, ns->size, 1.0);
          } else { //search in FONT_DIRS
             fonts[x] = search_font_in_default_paths(ns->name, ns->size, expanded_paths);
          } 
          if(JUNLIKELY(!fonts[x])) {
-            fprintf(stderr, "Warning: could not load font: %s\n", fontNames[x]);
+            fprintf(stderr, "Could not load font %d with font name %s\n", x, fontNames[x]);
+            Warning(_("could not load font: %s"), fontNames[x]);
          }
          FreeNameSize(ns);   
       }
       if(!fonts[x]) {
-         fprintf(stderr, "Font type %d: Using default font %s at size %g\n", x, DEFAULT_FONT, DEFAULT_SIZE);
+            fprintf(stderr, "Using default font for font type %d\n", x);
          default_name = sdsnew(DEFAULT_FONT);
          default_name = sdscat(default_name,".ttf");
          if(DEFAULT_FONT[0] == '/') {  //We assume this is an absolute path
@@ -318,15 +292,17 @@ fprintf(stderr,"Need font name: %s at size %g\n", ns->name, ns->size); fflush(st
          sdsfree(default_name);
      } 
      if(JUNLIKELY(!fonts[x])) {
-        fprintf(stderr,"could not load the default font: %s\n", DEFAULT_FONT);
+        FatalError(_("could not load the default font: %s"), DEFAULT_FONT);
      }
         
    }
    free_expanded_paths(expanded_paths);
 
-   sft_x1 = SFT_X_create_from_file("/home/alpine/.config/ggwm/fonts/chivo-v18-latin_latin-ext-500.ttf",14.0,1.0); 
-   sft_x3 = SFT_X_create_from_file("/home/alpine/.config/ggwm/fonts/chivo-v18-latin_latin-ext-500.ttf",12.0,1.0); 
-}
+   fprintf(stderr, "\nLoop for searching font ended\n\n");
+   for(x = 0; x < FONT_COUNT; x++) {
+	   if (fontNames[x]) fprintf(stderr, "Font type %d has name %s and points to %p\n", x, fontNames[x], fonts[x]);
+	   else fprintf(stderr, "Font type %d still without name, pointing to %p\n", x, fonts[x]); }
+
 #else /* no USE_XRENDER */
 
    for(x = 0; x < FONT_COUNT; x++) {
@@ -345,7 +321,7 @@ fprintf(stderr,"Need font name: %s at size %g\n", ns->name, ns->size); fflush(st
    }
 
 #endif /* no USE_XRENDER */
-
+}
 
 /** Shutdown font support. */
 void ShutdownFonts(void)
@@ -455,16 +431,6 @@ void ReleaseUTF8String(char *utf8String)
 /** Get the width of a string. */
 int GetStringWidth(FontType ft, const char *str)
 {
-#ifdef USE_XRENDER
-int sft_w;
-sft_w =  SFT_X_get_string_width(fonts[ft], str);
-return sft_w;
-if(ft == 1)
-sft_w =  SFT_X_get_string_width(sft_x1, str);
-else
-sft_w =  SFT_X_get_string_width(sft_x3, str);
-   XGlyphInfo extents;
-#endif
 #ifdef USE_FRIBIDI
    FriBidiChar *temp_i;
    FriBidiChar *temp_o;
@@ -499,7 +465,7 @@ sft_w =  SFT_X_get_string_width(sft_x3, str);
 
    /* Get the width of the string. */
 #ifdef USE_XRENDER
-   result = extents.xOff;
+   result = SFT_X_get_string_width(fonts[ft], output);
 #else
    result = XTextWidth(fonts[ft], output, len);
 #endif
@@ -518,10 +484,6 @@ sft_w =  SFT_X_get_string_width(sft_x3, str);
 /** Get the height of a string. */
 int GetStringHeight(FontType ft)
 {
-//if(ft == 1)
-  // return sft_x1->ascent + sft_x1->descent;
-//else
-//   return sft_x3->ascent + sft_x3->descent;
    Assert(fonts[ft]);
    return fonts[ft]->ascent + fonts[ft]->descent;
 }
@@ -543,8 +505,6 @@ void SetFont(FontType type, const char *value)
 void RenderString(Drawable d, FontType font, ColorType color,
                   int x, int y, int width, const char *str)
 {
-//return;
-
    XRectangle rect;
    Region renderRegion;
    int len;
@@ -555,18 +515,17 @@ void RenderString(Drawable d, FontType font, ColorType color,
    FriBidiParType type = FRIBIDI_PAR_ON;
    int unicodeLength;
 #endif
-//#ifdef USE_XRENDER
-//   XftDraw *xd;
-//   XGlyphInfo extents;
-//#else
+#ifdef USE_XRENDER
+   XRenderColor * sft_color = GetXRenderColor(color);
+#else
    XGCValues gcValues;
    unsigned long gcMask;
    GC gc;
-//#endif
+#endif
    char *utf8String;
 
    /* Early return for empty strings. */
-   if(!str || !str[0]) {
+   if(!str || !str[0] || width < 1) {
       return;
    }
 
@@ -576,13 +535,13 @@ void RenderString(Drawable d, FontType font, ColorType color,
    /* Get the length of the UTF-8 string. */
    len = strlen(utf8String);
 
-//#ifdef USE_XRENDER
+#ifdef USE_XRENDER
 //   xd = XftDrawCreate(display, d, rootVisual, rootColormap);
-//#else
+#else
    gcMask = GCGraphicsExposures;
    gcValues.graphics_exposures = False;
    gc = JXCreateGC(display, d, gcMask, &gcValues);
-//#endif
+#endif
 
 
    /* Apply the bidi algorithm if requested. */
@@ -604,14 +563,11 @@ void RenderString(Drawable d, FontType font, ColorType color,
    rect.x = x;
    rect.y = y;
    rect.height = GetStringHeight(font);
-//#ifdef USE_XRENDER
-//   JXftTextExtentsUtf8(display, fonts[font], (const unsigned char*)output,
-//                       len, &extents);
-//   rect.width = extents.xOff;
-//#else
-//   rect.width = XTextWidth(fonts[font], output, len);
-//#endif
-rect.width =  SFT_X_get_string_width(fonts[font], str);
+#ifdef USE_XRENDER
+   rect.width =  SFT_X_get_string_width(fonts[font], str);
+#else
+   rect.width = XTextWidth(fonts[font], output, len);
+#endif
    rect.width = Min(rect.width, width) + 2;
 
    /* Combine the width bounds with the region to use. */
@@ -619,27 +575,15 @@ rect.width =  SFT_X_get_string_width(fonts[font], str);
    XUnionRectWithRegion(&rect, renderRegion, renderRegion);
 
    /* Display the string. */
-//#ifdef USE_XRENDER
-//   JXftDrawSetClip(xd, renderRegion);
-//   JXftDrawStringUtf8(xd, GetXftColor(color), fonts[font],
-//                      x, y + fonts[font]->ascent,
-//                      (const unsigned char*)output, len);
-//   JXftDrawChange(xd, rootWindow);
-//#else
+#ifdef USE_XRENDER
+   SFT_X_draw_string32(display, d, x, y,  sft_color, fonts[font], str, width);
+   free(sft_color);
+#else
    JXSetForeground(display, gc, colors[color]);
    JXSetRegion(display, gc, renderRegion);
-XRenderColor * sft_color = GetXRenderColor(color);
-fprintf(stderr,"Drawing string %s at %d,%d with font %s type %d\n", str,x,y, fonts[font]->filename,font);
-//if(font == 1)
-//SFT_X_draw_string32(display, d, x, y,  sft_color, sft_x1, str, width);
-//else if(font==3)
-//SFT_X_draw_string32(display, d, x, y,  sft_color, sft_x3, str, width);
-//else
-SFT_X_draw_string32(display, d, x, y,  sft_color, fonts[font], str, width);
-free(sft_color);
-//   JXSetFont(display, gc, fonts[font]->fid);
-//   JXDrawString(display, d, gc, x, y + fonts[font]->ascent, output, len);
-//#endif
+   JXSetFont(display, gc, fonts[font]->fid);
+   JXDrawString(display, d, gc, x, y + fonts[font]->ascent, output, len);
+#endif
 
    /* Free any memory used for UTF conversion. */
 #ifdef USE_FRIBIDI
@@ -651,10 +595,10 @@ free(sft_color);
 
    XDestroyRegion(renderRegion);
 
-//#ifdef USE_XRENDER
+#ifdef USE_XRENDER
 //   XftDrawDestroy(xd);
-//#else
+#else
    JXFreeGC(display, gc);
-//#endif
+#endif
 
 }
