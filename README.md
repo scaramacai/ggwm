@@ -32,8 +32,6 @@ For details on the configuration, please see the file README.schrift.md in this 
 
 I also included in the code the ["Simple Dynamic Strings library for C"](https://github.com/antirez/sds) by Salvatore Sanfilippo, to simplify manipulating strings. For now, its use was limited to the files I changed or added, but it would be nice to replace with sds code here and there, where strings are used.
 
-if you download from Github use the **schrift-branch** to get the updated code.
-
 To build ggwm you will need a recent C compiler (gcc works), X11, and the
 "development headers" for X11 and Xlib.
 If available and not disabled at compile time, ggwm  will also use
