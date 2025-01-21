@@ -70,9 +70,9 @@ void StartupTrayButtons(void)
    for(bp = buttons; bp; bp = bp->next) {
       if(bp->label) {
          bp->cp->requestedWidth = BUTTON_BORDER * 2;
-         bp->cp->requestedWidth += GetStringWidth(FONT_TRAY, bp->label);
+         bp->cp->requestedWidth += GetStringWidth(FONT_TRAYBUTTON, bp->label);
          bp->cp->requestedHeight = BUTTON_BORDER * 2;
-         bp->cp->requestedHeight += GetStringHeight(FONT_TRAY);
+         bp->cp->requestedHeight += GetStringHeight(FONT_TRAYBUTTON);
       } else {
          bp->cp->requestedWidth = 0;
          bp->cp->requestedHeight = 0;
@@ -189,8 +189,8 @@ void SetSize(TrayComponentType *cp, int width, int height)
    bp = (TrayButtonType*)cp->object;
 
    if(bp->label) {
-      labelWidth = GetStringWidth(FONT_TRAY, bp->label);
-      labelHeight = GetStringHeight(FONT_TRAY);
+      labelWidth = GetStringWidth(FONT_TRAYBUTTON, bp->label);
+      labelHeight = GetStringHeight(FONT_TRAYBUTTON);
       if(bp->icon) {
          /* Padding on the left if there is an icon. */
          labelWidth += BUTTON_BORDER;
@@ -294,7 +294,7 @@ void Draw(TrayComponentType *cp)
    button.border = settings.trayDecorations == DECO_MOTIF;
    button.x = 0;
    button.y = 0;
-   button.font = FONT_TRAY;
+   button.font = FONT_TRAYBUTTON;
    button.text = bp->label;
    button.labelPos = LABEL_POSITION_RIGHT;
    button.icon = bp->icon;

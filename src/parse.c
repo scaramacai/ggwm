@@ -150,7 +150,7 @@ static const StringMappingType OPTION_MAP[] = {
 };
 static const unsigned int OPTION_MAP_COUNT = ARRAY_LENGTH(OPTION_MAP);
 
-static const char *DEFAULT_TITLE = "JWM";
+static const char *DEFAULT_TITLE = "ggWM";
 static const char *LABEL_ATTRIBUTE = "label";
 static const char *ICON_ATTRIBUTE = "icon";
 static const char *TOOLTIP_ATTRIBUTE = "tooltip";

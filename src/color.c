@@ -513,24 +513,20 @@ void GetColor(XColor *c)
    }
 }
 
-/** Get an XFT color for the specified component. */
-#ifdef USE_XFT
-XftColor *GetXftColor(ColorType type)
+/** Get an XRenderColor for the specified component. */
+#ifdef USE_XRENDER
+XRenderColor *GetXRenderColor(ColorType type)
 {
 
-   if(!xftColors[type]) {
-      XRenderColor rcolor;
-      const unsigned long rgb = rgbColors[type];
-      xftColors[type] = Allocate(sizeof(XftColor));
-      rcolor.alpha = 65535;
-      rcolor.red = ((rgb >> 16) & 0xFF) * 257;
-      rcolor.green = ((rgb >> 8) & 0xFF) * 257;
-      rcolor.blue = (rgb & 0xFF) * 257;
-      JXftColorAllocValue(display, rootVisual, rootColormap, &rcolor,
-                          xftColors[type]);
-   }
+   XRenderColor * rcolor;
+   const unsigned long rgb = rgbColors[type];
+   rcolor = Allocate(sizeof(XRenderColor));
+   rcolor->alpha = 65535;
+   rcolor->red = ((rgb >> 16) & 0xFF) * 257;
+   rcolor->green = ((rgb >> 8) & 0xFF) * 257;
+   rcolor->blue = (rgb & 0xFF) * 257;
 
-   return xftColors[type];
+   return rcolor;
 
 }
 #endif

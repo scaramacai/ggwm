@@ -111,8 +111,6 @@ AC_DEFUN([GGWM_PKGCONFIG],
    fi
 ])
 
-GGWM_PKGCONFIG([use_pkgconfig_freetype2], [freetype2])
-GGWM_PKGCONFIG([use_pkgconfig_xft], [xft])
 GGWM_PKGCONFIG([use_pkgconfig_xrender], [xrender])
 GGWM_PKGCONFIG([use_pkgconfig_fribidi], [fribidi])
 
@@ -134,7 +132,7 @@ AC_ARG_ENABLE(png,
    AS_HELP_STRING([--disable-png],[disable PNG images]) )
 if test "$enable_png" != "no" ; then
       enable_png="yes"
-      AC_DEFINE(USE_PNG, 1, [Define to use libpng])
+      AC_DEFINE(USE_PNG, 1, [Define to use PNG images])
 fi
 
 ############################################################################
@@ -144,55 +142,12 @@ AC_ARG_ENABLE(jpeg,
    AS_HELP_STRING([--disable-jpeg],[disable JPEG images]) )
 if test "$enable_jpeg" != "no" ; then
       enable_jpeg="yes"
-   AC_DEFINE(USE_JPEG, 1, [Define to use libjpeg])
-fi
-
-############################################################################
-# Check if XFT support was requested and available.
-############################################################################
-AC_ARG_ENABLE(xft, AS_HELP_STRING([--disable-xft],[disable Xft]) )
-if test "$enable_xft" != "no"; then
-
-   if test "$use_pkgconfig_freetype2" = "yes" ; then
-      FT2_CFLAGS=`$PKGCONFIG --cflags freetype2`
-      FT2_LDFLAGS=`$PKGCONFIG --libs freetype2`
-   elif which freetype-config >/dev/null ; then
-      FT2_CFLAGS=`freetype-config --cflags`
-      FT2_LDFLAGS=`freetype-config --libs`
-   else
-      FT2_CFLAGS=""
-      FT2_LDFLAGS=""
-   fi
-
-   if test "$use_pkgconfig_xft" = "yes" ; then
-      XFT_CFLAGS=`$PKGCONFIG --cflags xft`
-      XFT_LDFLAGS=`$PKGCONFIG --libs xft`
-   elif which xft-config >/dev/null ; then
-      XFT_CFLAGS=`xft-config --cflags`
-      XFT_LDFLAGS=`xft-config --libs`
-   else
-      XFT_LDFLAGS="-lXft"
-   fi
-
-fi
-if test "$enable_xft" != "no" ; then
-   AC_CHECK_LIB(Xft, XftFontOpenName,
-      [ LDFLAGS="$LDFLAGS $XFT_LDFLAGS $FT2_LDFLAGS"
-        CFLAGS="$CFLAGS $XFT_CFLAGS $FT2_CFLAGS"
-        enable_xft="yes"
-        AC_DEFINE(USE_XFT, 1, [Define to enable Xft]) ],
-      [ enable_xft="no"
-        AC_MSG_WARN([unable to use Xft]) ],
-      [ $XFT_LDFLAGS $FT2_LDFLAGS ])
-fi
-if test "$enable_xft" != "no" ; then
-   AC_CHECK_HEADER([ft2build.h], [], [], [
-#include <X11/Xlib.h>
-      ])
+   AC_DEFINE(USE_JPEG, 1, [Define to use JPEG images])
 fi
 
 ############################################################################
 # Check if support for the XRENDER extension was requested and available.
+# If XRENDER is available, automatically libschrift is used
 ############################################################################
 AC_ARG_ENABLE(xrender,
    AS_HELP_STRING([--disable-xrender],[disable XRender]) )

@@ -528,6 +528,13 @@ void DrawPager(const PagerType *pp)
                    dx * (deskWidth + 1), dy * (deskHeight + 1),
                    deskWidth, deskHeight);
 
+   /* Draw the clients. */
+   for(x = FIRST_LAYER; x <= LAST_LAYER; x++) {
+      for(np = nodeTail[x]; np; np = np->prev) {
+         DrawPagerClient(pp, np);
+      }
+   }
+
    /* Draw the labels. */
    if(pp->labeled) {
       textHeight = GetStringHeight(FONT_PAGER);
@@ -544,13 +551,6 @@ void DrawPager(const PagerType *pp)
                             COLOR_PAGER_TEXT, xc, yc, deskWidth, name);
             }
          }
-      }
-   }
-
-   /* Draw the clients. */
-   for(x = FIRST_LAYER; x <= LAST_LAYER; x++) {
-      for(np = nodeTail[x]; np; np = np->prev) {
-         DrawPagerClient(pp, np);
       }
    }
 
