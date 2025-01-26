@@ -479,7 +479,7 @@ void Initialize(void)
    InitializeDialogs();
 #endif
    InitializeDock();
-   InitializeFonts();
+//   InitializeFonts();
    InitializeGroups();
    InitializeHints();
    InitializeIcons();
@@ -493,6 +493,7 @@ void Initialize(void)
    InitializeTaskBar();
    InitializeTray();
    InitializeTrayButtons();
+   InitializeFonts();
 }
 
 /** Startup the various JWM components.
@@ -516,9 +517,13 @@ void Startup(void)
    StartupIcons();
    StartupBackgrounds();
    StartupCursors();
+   StartupPopup();
+
+   StartupRootMenu();
 
    StartupPager();
    StartupClock();
+//   StartupPager();
    StartupTaskBar();
    StartupTrayButtons();
    StartupDesktops();
@@ -533,9 +538,9 @@ void Startup(void)
 #  ifndef DISABLE_CONFIRM
       StartupDialogs();
 #  endif
-   StartupPopup();
-
-   StartupRootMenu();
+//   StartupPopup();
+//
+//   StartupRootMenu();
 
    SetDefaultCursor(rootWindow);
    ReadCurrentDesktop();
