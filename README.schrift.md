@@ -12,12 +12,13 @@ ggwm implements an hardcoded font used by default, however, as per
 the bug I mentioned before, for some unknown reasons, some of the items are non drawn (or not refreshed, or what?), depending on the configuration of the fonts in ggwmrc.
 
 ## How to prepare ggwmrc to have a functional ggwm
-According to my experiments you will have a full functional ggwm when you explicitly declare in ggwmrc one of these configurations:
+After the last modification (github 0d1c368, fossil commit d34bbcff31) you will have a full functional ggwm when you explicitly declare a font in each Style section of ggwmrc,
+that is  WindowStyle, MenuStyle, TrayStyle and so on.
 
--    **You MUST explicitly declare FONT in WindowStyle, MenuStyle, and TrayStyle**.
--    You can add FONT in ClockStyle and/or TasklistStyle.
+-    **You MUST explicitly declare FONT in WindowStyle, MenuStyle, TrayStyle, PopupStyle, ClockStyle, TaskListStyle, PagerStyle and TrayButtonStyle**.
+-    Other configurations could work for you, but are not tested.
 
-If you put more or less than these fonts on your configuration file ggwmrc, weird things happen!   
+If you don't follow these directives on your configuration file ggwmrc, weird things happen!   
 In many cases, you miss the labels on the pager, or the popups, but there are also configurations where the menu font disappears.
 
 Anyway, since there are configurations making ggwm happy, and working well, I think it is time to publish it,
@@ -25,14 +26,14 @@ Anyway, since there are configurations making ggwm happy, and working well, I th
 
 ### Font declaration in ggwmrc
 
- Libschrift works with the most of ttf files, while it is not featured to deal with otf or Type1 fonts.
+Libschrift works with the most of ttf files, while it is not featured to deal with otf or Type1 fonts.
 
- Hence you can choose only among True Type (.ttf) fonts. Today, however, there is a large choice of very good fonts.
+Hence you can choose only among True Type (.ttf) fonts. Today, however, there is a large choice of very good fonts.
 
- I'll add some configuration examples and some fonts for latin alphabet that work well.
-  If you are not on the latin side, you can try [Noto fonts](https://fonts.google.com/noto).
+I'll add some configuration examples and some fonts for latin alphabet that work well.
+If you are not on the latin side, you can try [Noto fonts](https://fonts.google.com/noto) or [FiraGO](https://github.com/bBoxType/FiraGO).
 
- Since ggwm does not use fontconfig, font names used in ggwmrc are different from the ones we are used with Xft and so on.
+Since ggwm does not use fontconfig, font names used in ggwmrc are different from the ones we are used with Xft and so on.
 
 ***In ggwmrc you must indicate the name of the font file, not the font family as it is in fontconfig***
 
