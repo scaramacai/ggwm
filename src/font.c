@@ -261,7 +261,6 @@ void StartupFonts(void)
 	   else fprintf(stderr, "Font type %d still without name\n", x, fontNames[x]); }
    fprintf(stderr, "\nBegin Loop for searching font\n\n");
 #ifdef USE_XRENDER
-
    sds * expanded_paths = NULL;
    sds default_name = NULL;
    unsigned int i;
@@ -302,6 +301,24 @@ void StartupFonts(void)
    for(x = 0; x < FONT_COUNT; x++) {
 	   if (fontNames[x]) fprintf(stderr, "Font type %d has name %s and points to %p\n", x, fontNames[x], fonts[x]);
 	   else fprintf(stderr, "Font type %d still without name, pointing to %p\n", x, fonts[x]); }
+
+/* for test only/
+   for(x = 0; x < FONT_COUNT; x++) {
+     if(fonts[x]) {
+         SFT_X_free(fonts[x]);
+     }
+   }
+
+   fonts[0]=SFT_X_create_from_file("/home/alpine/.config/ggwm/fonts/alegreya-sans-v25-latin_latin-ext-regular.ttf", 13.5, 1.0);
+   fonts[1]=SFT_X_create_from_file("/home/alpine/.config/ggwm/fonts/FiraGO-Regular.ttf", 15.5, 1.0);
+   fonts[2]=SFT_X_create_from_file("/home/alpine/.config/ggwm/fonts/alegreya-sans-v25-latin_latin-ext-regular.ttf", 13.5, 1.0);
+   fonts[3]=SFT_X_create_from_file("/home/alpine/.config/ggwm/fonts/alegreya-sans-v25-latin_latin-ext-regular.ttf", 13.5, 1.0);
+   fonts[4]=SFT_X_create_from_file("/home/alpine/.config/ggwm/fonts/alegreya-sans-v25-latin_latin-ext-regular.ttf", 13.5, 1.0);
+   fonts[5]=SFT_X_create_from_file("/home/alpine/.config/ggwm/fonts/chivo-v18-latin_latin-ext-500.ttf", 13.0, 1.0);
+   fonts[6]=SFT_X_create_from_file("/home/alpine/.config/ggwm/fonts/alegreya-sans-v25-latin_latin-ext-regular.ttf", 13.5, 1.0);
+   fonts[7]=SFT_X_create_from_file("/home/alpine/.config/ggwm/fonts/alegreya-sans-v25-latin_latin-ext-regular.ttf", 13.5, 1.0);
+   return;
+ end test only */
 
 #else /* no USE_XRENDER */
 
