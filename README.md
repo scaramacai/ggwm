@@ -1,4 +1,4 @@
-ggwm
+ggwm window manager
 ==============================================================================
 **NOTE:** This is the mirror of my private fossil repository
 
@@ -23,6 +23,8 @@ The first step in the project was about icon and images. At present, ggwm native
 The canonical libraries for png and jpeg formats have been removed as well, in favour of the single file
  image loader [stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h).
 
+Xpm images are managed by using a modified version of the routines by Jim Frost, taken from [xli](https://github.com/openSUSE/xli), and libXpm is not needed.
+
 A big step in the project was using [libschrift](https://github.com/tomolt/libschrift) by Thomas Holtmann, to deal with True Type fonts.  
 This is still at an alpha state, but things are going in the right direction and now ggwm with libschrift can be used for everyday work.  
 I removed the dependecies on libXft and FontConfig, while libXrender is still needed to render strings with ttf fonts.
@@ -42,7 +44,6 @@ the following libraries:
  - libXext for the shape extension.
  - libXmu for rounded corners.
  - libXinerama for multiple head support.
- - libXpm for XPM icons and backgrounds.
 
 
 ------------------------------------------------------------------------------

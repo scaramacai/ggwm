@@ -29,13 +29,6 @@
 
 #include "jwm.h"
 
-#ifndef MAKE_DEPEND
-
-#  ifdef USE_XPM
-#     include <X11/xpm.h>
-#  endif
-#endif /* MAKE_DEPEND */
-
 #include "image.h"
 #include "main.h"
 #include "error.h"
@@ -74,23 +67,14 @@ static ImageNode *LoadSTBImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
 #endif /* USE_PNG || USE_JPEG */
 
-#ifdef USE_XPM
 static ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
-#endif
 #ifdef USE_XBM
 static ImageNode *LoadXBMImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
 #endif
 
 static ImageNode *CreateImageFromXImages(XImage *image, XImage *shape);
-
-#ifdef USE_XPM
-static int AllocateColor(Display *d, Colormap cmap, char *name,
-                         XColor *c, void *closure);
-static int FreeColors(Display *d, Colormap cmap, Pixel *pixels, int n,
-                      void *closure);
-#endif
 
 /* File extension to image loader mapping. */
 static const struct {
@@ -105,9 +89,7 @@ static const struct {
    {".jpg",       LoadSTBImage     },
    {".jpeg",      LoadSTBImage     },
 #endif
-#ifdef USE_XPM
    {".xpm",       LoadXPMImage      },
-#endif
 #ifdef USE_XBM
    {".xbm",       LoadXBMImage      },
 #endif
@@ -305,7 +287,7 @@ static ImageNode *LoadNSVGImage(const char *fileName, int rwidth, int rheight,
 }
 
 /** Load an XPM image from the specified file. */
-#ifdef USE_XPM
+
 /* xpixmap.c:
  *
  * XPixMap format file read and identify routines.  these can handle any
@@ -318,7 +300,7 @@ static ImageNode *LoadNSVGImage(const char *fileName, int rwidth, int rheight,
  * variables for display and screen.  it's ugly but it keeps the rest
  * of the image routines clean.
  *
- * Copyright 1989 Jim Frost.  See included file "copyright.h" for complete
+ * Copyright 1989 Jim Frost.  See Copyright for complete
  * copyright information.
  *
  * Modified 16/10/92 by GWG to add version 2C and 3 support.
@@ -345,62 +327,7 @@ static ImageNode *LoadNSVGImage(const char *fileName, int rwidth, int rheight,
  * USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* Architecture independent memory to value conversions.
- * Note the "Normal" internal format is big endian.
- */
-
 #include <strings.h>
-
-#define memToVal(PTR,LEN) (\
-	(LEN) == 1 ? (unsigned long)(*((unsigned char *)(PTR))) : \
-	(LEN) == 2 ? (unsigned long)(((unsigned long)(*((unsigned char *)(PTR))))<< 8) \
-		+ (*(((unsigned char *)(PTR))+1)) : \
-	(LEN) == 3 ? (unsigned long)(((unsigned long)(*((unsigned char *)(PTR))))<<16) \
-		+ (((unsigned long)(*(((unsigned char *)(PTR))+1)))<< 8) \
-		+ (*(((unsigned char *)(PTR))+2)) : \
-	(unsigned long)(((unsigned long)(*((unsigned char *)(PTR))))<<24) \
-		+ (((unsigned long)(*(((unsigned char *)(PTR))+1)))<<16) \
-		+ (((unsigned long)(*(((unsigned char *)(PTR))+2)))<< 8) \
-		+ (*(((unsigned char *)(PTR))+3)))
-
-#define valToMem(VAL,PTR,LEN)  ( \
-(LEN) == 1 ? (*((unsigned char *)(PTR)) = (VAL)) : \
-(LEN) == 2 ? (*((unsigned char *)(PTR)) = (((unsigned long)(VAL))>> 8), \
-	*(((unsigned char *)(PTR))+1) = (VAL)) : \
-(LEN) == 3 ? (*((unsigned char *)(PTR)) = (((unsigned long)(VAL))>>16), \
-	*(((unsigned char *)(PTR))+1) = (((unsigned long)(VAL))>> 8), \
-	*(((unsigned char *)(PTR))+2) = (VAL)) : \
-	(*((unsigned char *)(PTR)) = (((unsigned long)(VAL))>>24), \
-	*(((unsigned char *)(PTR))+1) = (((unsigned long)(VAL))>>16), \
-	*(((unsigned char *)(PTR))+2) = (((unsigned long)(VAL))>> 8), \
-	*(((unsigned char *)(PTR))+3) = (VAL)))
-
-#define memToValLSB(PTR,LEN) ( \
-	(LEN) == 1 ? (unsigned long)(*((unsigned char *)(PTR))) : \
-	(LEN) == 2 ? (unsigned long)(*((unsigned char *)(PTR))) \
-		+ (((unsigned long)(*(((unsigned char *)(PTR))+1)))<< 8) : \
-	(LEN) == 3 ? (unsigned long)(*((unsigned char *)(PTR))) \
-		+ (((unsigned long)(*(((unsigned char *)(PTR))+1)))<< 8) \
-		+ (((unsigned long)(*(((unsigned char *)(PTR))+2)))<<16) : \
-	(unsigned long)(*((unsigned char *)(PTR))) \
-		+ (((unsigned long)(*(((unsigned char *)(PTR))+1)))<< 8) \
-		+ (((unsigned long)(*(((unsigned char *)(PTR))+2)))<<16) \
-		+ (((unsigned long)(*(((unsigned char *)(PTR))+3)))<<24))
-
-
-/* this is provided for orthagonality */
-
-#define valToMemLSB(VAL,PTR,LEN) ( \
-(LEN) == 1 ? (*((unsigned char *)(PTR)) = (VAL)) : \
-(LEN) == 2 ? (*((unsigned char *)(PTR)) = (VAL), \
-	*(((unsigned char *)(PTR))+1) = (((unsigned long)(VAL))>> 8)) : \
-(LEN) == 3 ? (*((unsigned char *)(PTR)) = (VAL), \
-	*(((unsigned char *)(PTR))+1) = (((unsigned long)(VAL))>> 8), \
-	*(((unsigned char *)(PTR))+2) = (((unsigned long)(VAL))>>16)) : \
-	(*((unsigned char *)(PTR)) = (VAL), \
-	*(((unsigned char *)(PTR))+1) = (((unsigned long)(VAL))>> 8), \
-	*(((unsigned char *)(PTR))+2) = (((unsigned long)(VAL))>>16), \
-	*(((unsigned char *)(PTR))+3) = (((unsigned long)(VAL))>>24)))
 
 static void freeCtable(char **ctable, int ncolors)
 		/* color table */
@@ -588,19 +515,16 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 	char **ctable = NULL;	/* temp color table */
 	int *clookup;		/* working color table */
 	int cmin, cmax;		/* min/max color string index numbers */
-	ImageNode *result;
+	ImageNode *result = NULL;
 	uint32_t *color_array;
 	unsigned char alpha; /* add an alpha channel to image */
-	int pixlen;
 	XColor xcolor;
 	unsigned int a, b, x, y;
 	int c;
-//	unsigned char *dptr;
 	uint32_t *dptr;
 	int colkey = XPMKEY_C;
 	int gotkey = XPMKEY_NONE;
 	int donecmap = 0;
-	int verbose = 1; /* for debugging only; to be removed */ 
 
 	if (!(xpm_file = fopen(fileName, "rb"))) {
 		fprintf(stderr,"xpixmapLoad: could not open file %s\n", fileName);
@@ -620,13 +544,10 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 	}
 
 	for (depth = 1, value = 2; value < ncolors; value <<= 1, depth++);
-//	image = newRGBImage(w, h, depth);
-//	image->rgb.used = ncolors;
         color_array = (uint32_t *) malloc(ncolors * sizeof(uint32_t));
 
-	if (verbose)
-		fprintf(stderr, "%s is a %dx%d X Pixmap image (Version %d) with %d colors, of depth %d\n",
-		       fileName, w, h, format, ncolors, depth);
+//	fprintf(stderr, "%s is a %dx%d X Pixmap image (Version %d) with %d colors, of depth %d\n",
+//	       fileName, w, h, format, ncolors, depth);
 
 	/*
 	 * decide which version of the xpm file to read in
@@ -638,7 +559,6 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 				if (!fgets((unsigned char *) buf, BUFSIZ - 1, xpm_file)) {
 					fprintf(stderr, "xpixmapLoad: %s - unable to find a colormap\n", fileName);
 					freeCtable(ctable, ncolors);
-					//freeImage(image);
 					fclose(xpm_file);
 					return NULL;
 				}
@@ -650,7 +570,6 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 						if (gotkey == XPMKEY_NONE) {
 							fprintf(stderr, "xpixmapLoad: %s - colormap is missing\n", fileName);
 							freeCtable(ctable, ncolors);
-							//freeImage(image);
 							fclose(xpm_file);
 							return NULL;
 						}
@@ -692,7 +611,6 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 			if (c == EOF) {
 				fprintf(stderr, "xpixmapLoad: %s - file ended in the colormap\n", fileName);
 				freeCtable(ctable, ncolors);
-				//freeImage(image);
 				fclose(xpm_file);
 				return NULL;
 			}
@@ -703,7 +621,6 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 				if (c == EOF) {
 					fprintf(stderr, "xpixmapLoad: %s - file ended in the colormap\n", fileName);
 					freeCtable(ctable, ncolors);
-					//freeImage(image);
 					fclose(xpm_file);
 					return NULL;
 				}
@@ -715,7 +632,6 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 				if (((c = getc(xpm_file)) == EOF) || (c != '"')) {
 					fprintf(stderr, "xpixmapLoad: %s - file ended in the colormap\n", fileName);
 					freeCtable(ctable, ncolors);
-					//freeImage(image);
 					fclose(xpm_file);
 					return NULL;
 				}
@@ -729,7 +645,6 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 				if (c == EOF) {
 					fprintf(stderr, "xpixmapLoad: %s - file ended in the colormap\n", fileName);
 					freeCtable(ctable, ncolors);
-					//freeImage(image);
 					fclose(xpm_file);
 					return NULL;
 				}
@@ -741,7 +656,6 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 				if (c == EOF) {
 					fprintf(stderr, "xpixmapLoad: %s - file ended in the colormap\n", fileName);
 					freeCtable(ctable, ncolors);
-					//freeImage(image);
 					fclose(xpm_file);
 					return NULL;
 				}
@@ -796,16 +710,8 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 				xcolor.red = xcolor.green = xcolor.blue = 0;
 				alpha = 0;
 			}
-			fprintf(stderr, "xpixmapLoad: %s - Parsed color '%s' and got 0x%x%x%x\n", fileName, p,
-				(unsigned char)(xcolor.red >> 8), (unsigned char)(xcolor.green >> 8), (unsigned char)(xcolor.blue >> 8));
-			//color_array[a] = (xcolor.red >> 8) << 24 | (xcolor.green >> 8) <<16 | (xcolor.blue >> 8) << 8 | alpha;
-			//color_array[a] = (xcolor.red >> 8) << 24 | (xcolor.green >> 8) <<16 | (xcolor.blue >> 8) << 8;
-			//color_array[a] = (xcolor.blue >> 8) << 24 | (xcolor.green >> 8) <<16 | (xcolor.red >> 8) << 8;
+			/* Why is this the right one? I don't know :( */
 			color_array[a] = alpha <<24 |(xcolor.blue >> 8) << 16 | (xcolor.green >> 8) << 8 | (xcolor.red >> 8);
-			fprintf(stderr, "xpixmapLoad: %s - Transformed color '%s' and got 0x%x\n", fileName, p, color_array[a]);
-			//*(image->rgb.red + a) = xcolor.red;
-			//*(image->rgb.green + a) = xcolor.green;
-			//*(image->rgb.blue + a) = xcolor.blue;
 		}
 	}
 
@@ -842,14 +748,10 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 	/* read in image data
 	 */
 
-	if (depth == 1) {
-	    result = CreateImage(w, h, 1);
-	    pixlen = 1;
-	} else {
-	    result = CreateImage(w, h, 0);
-	    pixlen = 4;
-	}
+	result = CreateImage(w, h, 0);
+
 	dptr = (uint32_t *) result->data;
+
 	for (y = 0; y < h; y++) {
 		while (((c = getc(xpm_file)) != EOF) && (c != '"'));
 		for (x = 0; x < w; x++) {
@@ -870,13 +772,8 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 				fprintf(stderr, "xpixmapLoad: %s - Pixel data doesn't match color data\n", fileName);
 				a = 0;
 			}
-			a = clookup[val - cmin];
-			//valToMem((unsigned long) a, dptr, pixlen);
-			//valToMem(color_array[a], dptr, pixlen);
-				fprintf(stderr, "xpixmapLoad: %s - Depth = %d Val = %d, Pixel = 0x%lx\n", fileName, depth, val, (unsigned long) a);
-			//dptr += pixlen;
+			a = clookup[val - cmin]; /* a is the index of color_array */
 			dptr[y*w+x] = color_array[a];
-				fprintf(stderr, "xpixmapLoad: %s - Image(%u,%u) = 0x%0x\n", fileName, x, y, dptr[x+y]);
 		}
 		if ((c = getc(xpm_file)) != '"') {
 			fprintf(stderr, "xpixmapLoad: %s - Short read of X Pixmap\n", fileName);
@@ -889,35 +786,9 @@ ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
 	free(clookup);	
 	free(color_array);
 	fclose(xpm_file);
-   swap_channels(result);
+        swap_channels(result);
 	return (result);
 }
-
-int xpixmapIdent(char *fileName)
-{
-	FILE *xpm_file;
-	unsigned int w, h;	/* image dimensions */
-	unsigned int cpp;	/* chars per pixel */
-	unsigned int ncolors;	/* number of colors */
-	int format;		/* XPM format type */
-
-	if (!(xpm_file = fopen(fileName, "rb"))) {
-		fprintf(stderr,"xpixmapIdent: could not open file %s\n", fileName);
-		return 0;
-	}
-	if (!isXpixmap(xpm_file, &w, &h, &cpp, &ncolors, &format)) {
-		fclose(xpm_file);
-		return 0;
-	}
-
-	printf("%s is a %dx%d X Pixmap image (Version %d) with %d colors\n",
-	       fileName, w, h, format, ncolors);
-
-	fclose(xpm_file);
-	return (1);
-}
-
-#endif /* USE_XPM */
 
 /** Load an XBM image from the specified file. */
 #ifdef USE_XBM
@@ -1010,30 +881,3 @@ void DestroyImage(ImageNode *image) {
       image = next;
    }
 }
-
-/** Callback to allocate a color for libxpm. */
-#ifdef USE_XPM
-int AllocateColor(Display *d, Colormap cmap, char *name,
-                  XColor *c, void *closure)
-{
-   if(name) {
-      if(!JXParseColor(d, cmap, name, c)) {
-         return -1;
-      }
-   }
-
-   GetColor(c);
-   return 1;
-}
-#endif /* USE_XPM */
-
-/** Callback to free colors allocated by libxpm.
- * We don't need to do anything here since color.c takes care of this.
- */
-#ifdef USE_XPM
-int FreeColors(Display *d, Colormap cmap, Pixel *pixels, int n,
-               void *closure)
-{
-   return 1;
-}
-#endif /* USE_XPM */

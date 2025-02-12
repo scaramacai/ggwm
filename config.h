@@ -122,9 +122,6 @@
 /* Define to 1 if you have the <X11/Xlib.h> header file. */
 #define HAVE_X11_XLIB_H 1
 
-/* Define to 1 if you have the <X11/xpm.h> header file. */
-/* #undef HAVE_X11_XPM_H */
-
 /* Define to 1 if you have the <X11/Xproto.h> header file. */
 #define HAVE_X11_XPROTO_H 1
 
@@ -174,29 +171,23 @@
 /* Define to use FriBidi */
 /* #undef USE_FRIBIDI */
 
-/* Define to use libjpeg */
-/* #undef USE_JPEG */
+/* Define to use JPEG images */
+#define USE_JPEG 1
 
-/* Define to use libpng */
-/* #undef USE_PNG */
+/* Define to use PNG images */
+#define USE_PNG 1
 
 /* Define to enable the X shape extension */
 /* #undef USE_SHAPE */
 
 /* Define to enable XBM images */
-/* #undef USE_XBM */
-
-/* Define to enable Xft */
-/* #undef USE_XFT */
+#define USE_XBM 1
 
 /* Define to enable Xinerama */
 /* #undef USE_XINERAMA */
 
 /* Define to use Xmu */
 /* #undef USE_XMU */
-
-/* Define to enable XPM support */
-/* #undef USE_XPM */
 
 /* Define to enable the XRender extension */
 #define USE_XRENDER 1

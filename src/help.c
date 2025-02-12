@@ -5,6 +5,8 @@
  *
  * @brief Functions for displaying information about JWM.
  *
+ * Modified 2025 Scaramacai
+ *
  */
 
 #include "jwm.h"
@@ -17,6 +19,7 @@ void DisplayAbout(void)
 {
    printf("GGWM v" PACKAGE_VERSION " by Scaramacai\n");
    printf("Based on JWM v2.4.6 by Joe Wingbermuehle\n");
+   printf("native icons svg xpm support\n");
    DisplayCompileOptions();
 }
 
@@ -33,7 +36,6 @@ void DisplayCompileOptions(void)
 #ifdef USE_FRIBIDI
           "fribidi "
 #endif
-          "icons svg "
 #ifdef USE_JPEG
           "jpeg "
 #endif
@@ -49,14 +51,8 @@ void DisplayCompileOptions(void)
 #ifdef USE_XBM
           "xbm "
 #endif
-#ifdef USE_XFT
-          "xft "
-#endif
 #ifdef USE_XINERAMA
           "xinerama "
-#endif
-#ifdef USE_XPM
-          "xpm "
 #endif
 #ifdef USE_XRENDER
           "xrender "
@@ -82,6 +78,6 @@ void DisplayHelp(void)
 void DisplayUsage(void)
 {
    DisplayAbout();
-   printf("usage: jwm [ options ]\n");
+   printf("usage: ggwm [ options ]\n");
 }
 
