@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "match.h"
 
 #include <regex.h>

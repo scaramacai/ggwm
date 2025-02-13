@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "traybutton.h"
 #include "tray.h"
 #include "icon.h"

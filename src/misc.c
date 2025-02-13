@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "misc.h"
 #include "debug.h"
 

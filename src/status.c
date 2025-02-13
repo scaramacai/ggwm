@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "status.h"
 #include "font.h"
 #include "screen.h"

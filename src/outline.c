@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "outline.h"
 #include "main.h"
 #include "grab.h"

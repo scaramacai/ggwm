@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "popup.h"
 #include "main.h"
 #include "color.h"

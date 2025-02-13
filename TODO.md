@@ -9,3 +9,4 @@ This is my TODO list for ggwm. Items are not in any particular order.
 - [x] Try to avoid the need of libXpm for pixmaps;
 - [ ] Investigate on the possible use of libgrapheme, in particular for RTL text.
 - [ ] Release version 0.2.0;
+- [ ] Separate components (wm, tray, clock, menu etc.)

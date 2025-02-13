@@ -9,7 +9,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "help.h"
 
 static void DisplayUsage(void);

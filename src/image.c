@@ -27,7 +27,7 @@
  */
  
 
-#include "jwm.h"
+#include "ggwm.h"
 
 #include "image.h"
 #include "main.h"

@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "clientlist.h"
 #include "client.h"
 #include "binding.h"

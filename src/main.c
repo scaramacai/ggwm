@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "main.h"
 #include "parse.h"
 #include "help.h"
