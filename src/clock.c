@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "clock.h"
 #include "tray.h"
 #include "color.h"

@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "button.h"
 #include "border.h"
 #include "main.h"

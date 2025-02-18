@@ -2,6 +2,7 @@
 # GGWM autoconf.
 ############################################################################
 
+CFLAGS="-Os"
 AC_INIT([ggwm],[0.1.0],[scaramacai])
 AC_PREREQ([2.72])
 AC_CONFIG_SRCDIR([src])
@@ -210,48 +211,6 @@ if test "$enable_fribidi" = "yes" ; then
 fi
 
 ############################################################################
-# Check if XPM support was requested and available.
-############################################################################
-AC_ARG_ENABLE(xpm,
-   AS_HELP_STRING([--disable-xpm],[disable XPM images]) )
-if test "$enable_xpm" != "no"; then
-
-   # We need to use the XPM libraries in Motif-2.1 on IRIX.
-   if test `uname` = "IRIX" ; then
-      CFLAGS="$CFLAGS -I/usr/Motif-2.1/include"
-      LDFLAGS="$LDFLAGS -L/usr/Motif-2.1/lib32"
-   fi
-   if test `uname` = "IRIX64" ; then
-      CFLAGS="$CFLAGS -I/usr/Motif-2.1/include"
-      LDFLAGS="$LDFLAGS -L/usr/Motif-2.1/lib64"
-   fi
-
-   AC_CHECK_HEADERS([X11/xpm.h], [],
-      [ enable_xpm="no";
-        AC_MSG_WARN([unable to use X11/xpm.h]) ],
-      [
-#include <X11/X.h>
-      ])
-
-fi
-if test "$enable_xpm" != "no"; then
-   AC_CHECK_DECL(XpmAllocColor, [],
-      [ enable_xpm="no"
-        AC_MSG_WARN([XPM library too old]) ],
-      [
-#include <X11/xpm.h>
-])
-fi
-if test "$enable_xpm" != "no"; then
-   AC_CHECK_LIB(Xpm, XpmReadFileToImage,
-      [ LDFLAGS="$LDFLAGS -lXpm";
-        enable_xpm="yes"
-        AC_DEFINE(USE_XPM, 1, [Define to enable XPM support]) ],
-      [ enable_xpm="no"
-        AC_MSG_WARN([unable to use libXpm]) ])
-fi
-
-############################################################################
 # Check if XBM support was requested and available.
 ############################################################################
 AC_ARG_ENABLE(xbm,
@@ -391,8 +350,7 @@ AC_SUBST(PACKAGE, "$PACKAGE")
 AC_CONFIG_FILES([po/Makefile.in
    Makefile
    src/Makefile
-   contrib/Makefile
-   jwm.1
+   ggwm.1
 ])
 AC_OUTPUT
 
@@ -410,8 +368,6 @@ echo "    Confirm:  $enable_confirm"
 echo "    PNG:      $enable_png"
 echo "    JPEG:     $enable_jpeg"
 echo "    XBM:      $enable_xbm"
-echo "    XPM:      $enable_xpm"
-echo "    XFT:      $enable_xft"
 echo "    XRender:  $enable_xrender"
 echo "    FriBidi:  $enable_fribidi"
 echo "    Shape:    $enable_shape"

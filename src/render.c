@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "render.h"
 #include "icon.h"
 #include "image.h"

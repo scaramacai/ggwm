@@ -1,4 +1,4 @@
-ggwm
+ggwm window manager
 ==============================================================================
 **NOTE:** This is the mirror of my private fossil repository
 
@@ -23,6 +23,8 @@ The first step in the project was about icon and images. At present, ggwm native
 The canonical libraries for png and jpeg formats have been removed as well, in favour of the single file
  image loader [stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h).
 
+Xpm images are managed by using a modified version of the routines by Jim Frost, taken from [xli](https://github.com/openSUSE/xli), and libXpm is not needed.
+
 A big step in the project was using [libschrift](https://github.com/tomolt/libschrift) by Thomas Holtmann, to deal with True Type fonts.  
 This is still at an alpha state, but things are going in the right direction and now ggwm with libschrift can be used for everyday work.  
 I removed the dependecies on libXft and FontConfig, while libXrender is still needed to render strings with ttf fonts.
@@ -31,8 +33,6 @@ At present ggwm is usable, but there is a strange bug I need to investigate, so 
 For details on the configuration, please see the file README.schrift.md in this directory.
 
 I also included in the code the ["Simple Dynamic Strings library for C"](https://github.com/antirez/sds) by Salvatore Sanfilippo, to simplify manipulating strings. For now, its use was limited to the files I changed or added, but it would be nice to replace with sds code here and there, where strings are used.
-
-if you download from Github use the **schrift-branch** to get the updated code.
 
 To build ggwm you will need a recent C compiler (gcc works), X11, and the
 "development headers" for X11 and Xlib.
@@ -44,7 +44,6 @@ the following libraries:
  - libXext for the shape extension.
  - libXmu for rounded corners.
  - libXinerama for multiple head support.
- - libXpm for XPM icons and backgrounds.
 
 
 ------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "taskbar.h"
 #include "tray.h"
 #include "timing.h"

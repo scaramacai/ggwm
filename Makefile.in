@@ -1,4 +1,4 @@
-PACKAGE = jwm
+PACKAGE = ggwm
 SYSCONF = $(DESTDIR)@SYSCONF@
 MANDIR = $(DESTDIR)@MANDIR@
 ICONDIR = $(DESTDIR)@ICONDIR@
@@ -33,16 +33,16 @@ uninstall:
 	$(MAKE) -C po uninstall
 	$(MAKE) -C contrib uninstall
 	rm -f $(SYSCONF)/system.jwmrc
-	rm -f $(MANDIR)/man1/jwm.1
+	rm -f $(MANDIR)/man1/ggwm.1
 
 tarball:
-	rm -f ../jwm-$(VERSION).tar.xz ;
-	rm -fr ../jwm-$(VERSION) ;
-	cp -r ../jwm ../jwm-$(VERSION) ;
-	(cd ../jwm-$(VERSION) && $(MAKE) distclean) ;
-	(cd .. && tar -cf jwm-$(VERSION).tar jwm-$(VERSION));
-	rm -fr ../jwm-$(VERSION) ;
-	(cd .. && xz jwm-$(VERSION).tar)
+	rm -f ../ggwm-$(VERSION).tar.xz ;
+	rm -fr ../ggwm-$(VERSION) ;
+	cp -r ../ggwm ../ggwm-$(VERSION) ;
+	(cd ../ggwm-$(VERSION) && $(MAKE) distclean) ;
+	(cd .. && tar -cf ggwm-$(VERSION).tar ggwm-$(VERSION));
+	rm -fr ../ggwm-$(VERSION) ;
+	(cd .. && xz ggwm-$(VERSION).tar)
 
 clean:
 	(cd src && $(MAKE) clean)
@@ -51,7 +51,7 @@ clean:
 
 distclean: clean
 	rm -f *[~#] config.cache config.log config.status config.h
-	rm -f Makefile src/Makefile jwm.1
+	rm -f Makefile src/Makefile ggwm.1
 	rm -fr autom4te.cache
 	rm -f Makefile.bak src/Makefile.bak
 	rm -fr .git .gitignore

@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "icon.h"
 #include "client.h"
 #include "render.h"
@@ -40,10 +40,8 @@ const char *ICON_EXTENSIONS[] = {
    ".png",
    ".PNG",
 #endif
-#ifdef USE_XPM
    ".xpm",
    ".XPM",
-#endif
 #ifdef USE_JPEG
    ".jpg",
    ".JPG",

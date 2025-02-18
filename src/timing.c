@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "timing.h"
 
 static const unsigned long MAX_TIME_SECONDS = 60;

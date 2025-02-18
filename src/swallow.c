@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "swallow.h"
 #include "main.h"
 #include "tray.h"

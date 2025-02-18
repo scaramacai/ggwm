@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "dock.h"
 #include "tray.h"
 #include "main.h"

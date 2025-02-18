@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "parse.h"
 #include "lex.h"
 #include "settings.h"

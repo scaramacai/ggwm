@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "resize.h"
 #include "client.h"
 #include "outline.h"

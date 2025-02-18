@@ -5,7 +5,7 @@
  * @brief Tray component actions.
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "action.h"
 #include "tray.h"
 #include "root.h"

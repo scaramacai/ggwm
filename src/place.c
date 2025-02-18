@@ -7,7 +7,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "place.h"
 #include "client.h"
 #include "border.h"

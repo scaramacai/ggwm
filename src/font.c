@@ -9,7 +9,7 @@
  *
  */
 
-#include "jwm.h"
+#include "ggwm.h"
 #include "font.h"
 #include "main.h"
 #include "error.h"

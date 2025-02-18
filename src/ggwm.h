@@ -1,14 +1,18 @@
 /**
+ * @file ggwm.h
+ * 
+ * based on
+ *
  * @file jwm.h
  * @author Joe Wingbermuehle
  * @date 2004-2006
  *
- * @brief The main JWM header file.
+ * @brief The main ggwm header file.
  *
  */
 
-#ifndef JWM_H
-#define JWM_H
+#ifndef GGWM_H
+#define GGWM_H
 
 #include "../config.h"
 
@@ -19,8 +23,6 @@
 #  include <string.h>
 #  include <ctype.h>
 #  include <limits.h>
-
-#include <setjmp.h>
 
 #  ifdef HAVE_LOCALE_H
 #     include <locale.h>
@@ -81,12 +83,6 @@
 #  ifdef USE_XINERAMA
 #     include <X11/extensions/Xinerama.h>
 #  endif
-#  ifdef USE_XFT
-#     ifdef HAVE_FT2BUILD_H
-#        include <ft2build.h>
-#     endif
-#     include <X11/Xft/Xft.h>
-#  endif
 #  ifdef USE_XRENDER
 #     include <X11/extensions/Xrender.h>
 #  endif
@@ -137,5 +133,4 @@
 #include "debug.h"
 #include "jxlib.h"
 
-#endif /* JWM_H */
-
+#endif /* GGWM_H */
