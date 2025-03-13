@@ -41,8 +41,6 @@ the following libraries:
 
  - libXrender for the render extension. In this case, True Type fonts will be used, via libschrift.
  - fribidi for bi-directional text support.
- - libXext for the shape extension.
- - libXmu for rounded corners.
  - libXinerama for multiple head support.
 
 
