@@ -49,23 +49,17 @@ typedef ImageNode *(*ImageLoader)(const char *fileName,
 static ImageNode *LoadNSVGImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
 
-#if defined(USE_PNG) || defined(USE_JPEG)
 /* include stb_image.h */
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_STATIC
-#ifdef USE_JPEG
 #define STBI_ONLY_JPEG
-#endif
-#ifdef USE_PNG
 #define STBI_ONLY_PNG
-#endif
 #define STBI_NO_LINEAR
 #define STBI_NO_HDR
 #include "stb_image.h"
 
 static ImageNode *LoadSTBImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
-#endif /* USE_PNG || USE_JPEG */
 
 static ImageNode *LoadXPMImage(const char *fileName, int rwidth, int rheight,
                                char preserveAspect);
@@ -82,13 +76,9 @@ static const struct {
    ImageLoader loader;
 } IMAGE_LOADERS[] = {
    {".svg",       LoadNSVGImage      },
-#ifdef USE_PNG
    {".png",       LoadSTBImage      },
-#endif
-#ifdef USE_JPEG
    {".jpg",       LoadSTBImage     },
    {".jpeg",      LoadSTBImage     },
-#endif
    {".xpm",       LoadXPMImage      },
 #ifdef USE_XBM
    {".xbm",       LoadXBMImage      },
@@ -207,7 +197,6 @@ ImageNode *LoadImageFromDrawable(Drawable pmap, Pixmap mask)
 
 /* Load a (PNG, JPEG) image from the given file name,
  * using the stb_image.h library. */
-#if defined(USE_PNG) || defined(USE_JPEG)
 static ImageNode *LoadSTBImage(const char *fileName, int rwidth, int rheight,
                         char preserveAspect)
 {
@@ -238,8 +227,6 @@ static ImageNode *LoadSTBImage(const char *fileName, int rwidth, int rheight,
    return result;
 }
 
-
-#endif /* USE_PNG || USE_JPEG */
 
 static ImageNode *LoadNSVGImage(const char *fileName, int rwidth, int rheight,
                                 char preserveAspect)

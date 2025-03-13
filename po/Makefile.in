@@ -14,7 +14,7 @@ PACKAGE = ggwm
 VERSION = 0.1.0
 PACKAGE_BUGREPORT = scaramacai
 
-SED = /bin/sed
+SED = /usr/bin/sed
 SHELL = /bin/sh
 
 
@@ -41,7 +41,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 # versions, $(mkinstalldirs) and $(install_sh) are unused.
 mkinstalldirs = $(SHELL) @install_sh@ -d
 install_sh = $(SHELL) @install_sh@
-MKDIR_P = /bin/mkdir -p
+MKDIR_P = /usr/bin/mkdir -p
 mkdir_p = @mkdir_p@
 
 # When building gettext-tools, we prefer to use the built programs
@@ -490,11 +490,11 @@ update-gmo: Makefile $(GMOFILES)
 
 # Recreate Makefile by invoking config.status. Explicitly invoke the shell,
 # because execution permission bits may not work on the current file system.
-# Use /bin/sh, which is the shell determined by autoconf for the use by its
+# Use /bin/bash, which is the shell determined by autoconf for the use by its
 # scripts, not $(SHELL) which is hardwired to /bin/sh and may be deficient.
 Makefile: Makefile.in.in Makevars $(top_builddir)/config.status @POMAKEFILEDEPS@
 	cd $(top_builddir) \
-	  && /bin/sh ./config.status $(subdir)/$@.in po-directories
+	  && /bin/bash ./config.status $(subdir)/$@.in po-directories
 
 force:
 

@@ -105,7 +105,6 @@ typedef struct {
    unsigned desktopCount;
    unsigned menuOpacity;
    unsigned desktopDelay;
-   unsigned cornerRadius;
    unsigned moveMask;
    unsigned dockSpacing;
    AlignmentType titleTextAlignment;

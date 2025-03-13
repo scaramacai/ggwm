@@ -86,10 +86,6 @@ static void UpdateState(ClientNode *np);
 static void DiscardEnterEvents();
 static char ClientCanReceiveSloppyFocus(const ClientNode *np);
 
-#ifdef USE_SHAPE
-static void HandleShapeEvent(const XShapeEvent *event);
-#endif
-
 /** Wait for an event and process it. */
 char WaitForEvent(XEvent *event)
 {
@@ -206,11 +202,6 @@ char WaitForEvent(XEvent *event)
          break;
       default:
          if(0) {
-#ifdef USE_SHAPE
-         } else if(haveShape && event->type == shapeEvent) {
-            HandleShapeEvent((XShapeEvent*)event);
-            handled = 1;
-#endif
          } else {
             handled = 0;
          }
@@ -1557,19 +1548,6 @@ void HandleMotionNotify(const XMotionEvent *event)
    }
 
 }
-
-/** Handle a shape event. */
-#ifdef USE_SHAPE
-void HandleShapeEvent(const XShapeEvent *event)
-{
-   ClientNode *np;
-   np = FindClientByWindow(event->window);
-   if(np) {
-      np->state.status |= STAT_SHAPED;
-      ResetBorder(np);
-   }
-}
-#endif /* USE_SHAPE */
 
 /** Handle a colormap event. */
 void HandleColormapChange(const XColormapEvent *event)

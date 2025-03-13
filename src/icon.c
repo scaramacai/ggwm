@@ -36,18 +36,14 @@ const char *ICON_EXTENSIONS[] = {
    "",
    ".svg",
    ".SVG",
-#ifdef USE_PNG
    ".png",
    ".PNG",
-#endif
    ".xpm",
    ".XPM",
-#ifdef USE_JPEG
    ".jpg",
    ".JPG",
    ".jpeg",
    ".JPEG",
-#endif
 #ifdef USE_XBM
    ".xbm",
    ".XBM",

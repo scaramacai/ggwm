@@ -60,7 +60,6 @@ void InitializeSettings(void)
    settings.trayDecorations = DECO_FLAT;
    settings.taskListDecorations = DECO_UNSET;
    settings.menuDecorations = DECO_FLAT;
-   settings.cornerRadius = 4;
    settings.groupTasks = 0;
    settings.listAllTasks = 0;
    settings.dockSpacing = 0;
@@ -75,8 +74,6 @@ void InitializeSettings(void)
 /** Make sure settings are reasonable. */
 void StartupSettings(void)
 {
-
-   FixRange(&settings.cornerRadius, 0, 5, 4);
 
    FixRange(&settings.borderWidth, 1, 128, 4);
    FixRange(&settings.titleHeight, 0, 256, 0);

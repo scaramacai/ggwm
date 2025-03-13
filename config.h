@@ -7,9 +7,6 @@
 /* Define to debug GGWM */
 /* #undef DEBUG */
 
-/* Define to disable confirm dialogs */
-/* #undef DISABLE_CONFIRM */
-
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 /* #undef ENABLE_NLS */
@@ -51,7 +48,7 @@
 #define HAVE_LANGINFO_H 1
 
 /* Define to 1 if you have the <libintl.h> header file. */
-/* #undef HAVE_LIBINTL_H */
+#define HAVE_LIBINTL_H 1
 
 /* Define to 1 if you have the <locale.h> header file. */
 #define HAVE_LOCALE_H 1
@@ -166,28 +163,16 @@
 #define STDC_HEADERS 1
 
 /* default system configuration path */
-#define SYSTEM_CONFIG "/usr/local/etc/system.jwmrc"
+#define SYSTEM_CONFIG "/usr/local/etc/system.ggwmrc"
 
 /* Define to use FriBidi */
 /* #undef USE_FRIBIDI */
-
-/* Define to use JPEG images */
-#define USE_JPEG 1
-
-/* Define to use PNG images */
-#define USE_PNG 1
-
-/* Define to enable the X shape extension */
-/* #undef USE_SHAPE */
 
 /* Define to enable XBM images */
 #define USE_XBM 1
 
 /* Define to enable Xinerama */
 /* #undef USE_XINERAMA */
-
-/* Define to use Xmu */
-/* #undef USE_XMU */
 
 /* Define to enable the XRender extension */
 #define USE_XRENDER 1

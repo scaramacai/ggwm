@@ -18,7 +18,6 @@
 #include "settings.h"
 #include "binding.h"
 
-#ifndef DISABLE_CONFIRM
 
 /** Current state of dialog buttons. */
 typedef unsigned char DialogButtonState;
@@ -502,21 +501,3 @@ void DrawButtons(void)
    DrawButton(&button);
 
 }
-
-#else /* DISABLE_CONFIRM */
-
-/** Process an event on a dialog window. */
-char ProcessDialogEvent(const XEvent *event)
-{
-   return 0;
-}
-
-/** Show a confirm dialog. */
-void ShowConfirmDialog(ClientNode *np, void (*action)(ClientNode*), ...)
-{
-   Assert(action);
-   (action)(np);
-}
-
-#endif /* DISABLE_CONFIRM */
-

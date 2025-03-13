@@ -36,10 +36,6 @@ extern char initializing;
 extern XContext clientContext;
 extern XContext frameContext;
 
-#ifdef USE_SHAPE
-extern char haveShape;
-extern int shapeEvent;
-#endif
 #ifdef USE_XRENDER
 extern char haveRender;
 #endif

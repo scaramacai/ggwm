@@ -70,10 +70,6 @@ char *exitCommand = NULL;
 XContext clientContext;
 XContext frameContext;
 
-#ifdef USE_SHAPE
-char haveShape;
-int shapeEvent;
-#endif
 #ifdef USE_XRENDER
 char haveRender;
 #endif
@@ -315,9 +311,6 @@ void StartupConnection(void)
 {
 
    XSetWindowAttributes attr;
-#ifdef USE_SHAPE
-   int shapeError;
-#endif
 #ifdef USE_XRENDER
    int renderEvent;
    int renderError;
@@ -404,15 +397,6 @@ void StartupConnection(void)
    sa.sa_handler = HandleChild;
    sigaction(SIGCHLD, &sa, NULL);
 
-#ifdef USE_SHAPE
-   haveShape = JXShapeQueryExtension(display, &shapeEvent, &shapeError);
-   if (haveShape) {
-      Debug("shape extension enabled");
-   } else {
-      Debug("shape extension disabled");
-   }
-#endif
-
 #ifdef USE_XRENDER
    haveRender = JXRenderQueryExtension(display, &renderEvent, &renderError);
    if(haveRender) {
@@ -475,9 +459,7 @@ void Initialize(void)
    InitializeCommands();
    InitializeCursors();
    InitializeDesktops();
-#ifndef DISABLE_CONFIRM
    InitializeDialogs();
-#endif
    InitializeDock();
 //   InitializeFonts();
    InitializeGroups();
@@ -535,9 +517,7 @@ void Startup(void)
    StartupPlacement();
    StartupClients();
 
-#  ifndef DISABLE_CONFIRM
       StartupDialogs();
-#  endif
 //   StartupPopup();
 //
 //   StartupRootMenu();
@@ -577,9 +557,7 @@ void Shutdown(void)
 
    ShutdownSwallow();
 
-#  ifndef DISABLE_CONFIRM
       ShutdownDialogs();
-#  endif
    ShutdownPopup();
    ShutdownBindings();
    ShutdownPager();
@@ -622,9 +600,7 @@ void Destroy(void)
    DestroyCommands();
    DestroyCursors();
    DestroyDesktops();
-#ifndef DISABLE_CONFIRM
    DestroyDialogs();
-#endif
    DestroyDock();
    DestroyFonts();
    DestroyGroups();

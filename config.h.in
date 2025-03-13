@@ -6,9 +6,6 @@
 /* Define to debug GGWM */
 #undef DEBUG
 
-/* Define to disable confirm dialogs */
-#undef DISABLE_CONFIRM
-
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
@@ -170,23 +167,11 @@
 /* Define to use FriBidi */
 #undef USE_FRIBIDI
 
-/* Define to use JPEG images */
-#undef USE_JPEG
-
-/* Define to use PNG images */
-#undef USE_PNG
-
-/* Define to enable the X shape extension */
-#undef USE_SHAPE
-
 /* Define to enable XBM images */
 #undef USE_XBM
 
 /* Define to enable Xinerama */
 #undef USE_XINERAMA
-
-/* Define to use Xmu */
-#undef USE_XMU
 
 /* Define to enable the XRender extension */
 #undef USE_XRENDER

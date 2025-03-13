@@ -525,22 +525,7 @@ void WriteNetAllowed(ClientNode *np)
 /** Check if a window uses the shape extension. */
 char CheckShape(Window win)
 {
-#ifdef USE_SHAPE
-   int shaped = 0;
-   int r1;
-   unsigned int r2;
-   if(haveShape) {
-      JXShapeSelectInput(display, win, ShapeNotifyMask);
-      XShapeQueryExtents(display, win, &shaped,
-                         &r1, &r1, &r2, &r2,
-                         &r1, &r1, &r1, &r2, &r2);
-      return shaped ? 1 : 0;
-   } else {
-      return 0;
-   }
-#else
    return 0;
-#endif
 }
 
 /** Read all hints needed to determine the current window state. */

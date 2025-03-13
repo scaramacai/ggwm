@@ -116,37 +116,6 @@ GGWM_PKGCONFIG([use_pkgconfig_xrender], [xrender])
 GGWM_PKGCONFIG([use_pkgconfig_fribidi], [fribidi])
 
 ############################################################################
-# Check if confirm dialogs should be used.
-############################################################################
-AC_ARG_ENABLE(confirm,
-   AS_HELP_STRING([--disable-confirm],[disable confirm dialogs]) )
-if test "$enable_confirm" = "no" ; then
-   AC_DEFINE(DISABLE_CONFIRM, 1, [Define to disable confirm dialogs])
-else
-   enable_confirm="yes"
-fi
-
-############################################################################
-# Check if PNG support was requested.
-############################################################################
-AC_ARG_ENABLE(png,
-   AS_HELP_STRING([--disable-png],[disable PNG images]) )
-if test "$enable_png" != "no" ; then
-      enable_png="yes"
-      AC_DEFINE(USE_PNG, 1, [Define to use PNG images])
-fi
-
-############################################################################
-# Check if JPEG support was requested.
-############################################################################
-AC_ARG_ENABLE(jpeg,
-   AS_HELP_STRING([--disable-jpeg],[disable JPEG images]) )
-if test "$enable_jpeg" != "no" ; then
-      enable_jpeg="yes"
-   AC_DEFINE(USE_JPEG, 1, [Define to use JPEG images])
-fi
-
-############################################################################
 # Check if support for the XRENDER extension was requested and available.
 # If XRENDER is available, automatically libschrift is used
 ############################################################################
@@ -224,42 +193,6 @@ if test "$enable_xbm" != "no"; then
 fi
 
 ############################################################################
-# Check if support for the shape extension was requested and available.
-############################################################################
-AC_ARG_ENABLE(shape,
-   AS_HELP_STRING([--disable-shape],[disable use of the X shape extension]) )
-if test "$enable_shape" != "no"; then
-   AC_CHECK_LIB(Xext, XShapeCombineRectangles,
-      [ LDFLAGS="$LDFLAGS -lXext"
-        enable_shape="yes"
-        AC_DEFINE(USE_SHAPE, 1, [Define to enable the X shape extension]) ],
-      [ enable_shape="no"
-        AC_MSG_WARN([unable to use the X shape extension]) ])
-fi
-
-############################################################################
-# Check if support for Xmu was requested and available.
-# Note that Xmu appears to be broken on IRIX (drawing rounded rectangles
-# larger than 800 pixels in either direction causes problems).
-############################################################################
-AC_ARG_ENABLE(xmu,
-   AS_HELP_STRING([--disable-xmu],[disable Xmu support]),
-   [],
-   [  if test `uname` = "IRIX" -o `uname` = "IRIX64" ; then
-         AC_MSG_WARN([disabling Xmu (it is broken on IRIX)])
-         enable_xmu="no"
-      fi
-   ])
-if test "$enable_xmu" != "no"; then
-   AC_CHECK_LIB(Xmu, XmuDrawRoundedRectangle,
-      [ LDFLAGS="$LDFLAGS -lXmu"
-        enable_xmu="yes"
-        AC_DEFINE(USE_XMU, 1, [Define to use Xmu]) ],
-      [ enable_xmu="no"
-        AC_MSG_WARN([unable to use Xmu]) ])
-fi
-
-############################################################################
 # Check if support for Xinerama was requested and available.
 ############################################################################
 AC_ARG_ENABLE(xinerama,
@@ -293,6 +226,11 @@ if test "$enable_debug" = "yes"; then
 else
    enable_debug="no"
 fi
+
+############################################################################
+# libm is needed
+############################################################################
+LDFLAGS="$LDFLAGS -lm"
 
 ############################################################################
 # Create the output files.
@@ -333,7 +271,7 @@ MANDIR=`eval echo \""$MANDIR"\"`
 DATADIR=`eval echo \""$datadir"\"`
 DATADIR=`eval echo \""$DATADIR"\"`
 
-AC_DEFINE_UNQUOTED(SYSTEM_CONFIG, "$SYSCONF/system.jwmrc",
+AC_DEFINE_UNQUOTED(SYSTEM_CONFIG, "$SYSCONF/system.ggwmrc",
    [default system configuration path])
 
 AC_SUBST(CFLAGS)
@@ -364,14 +302,9 @@ echo "Link flags:    $LDFLAGS"
 echo
 echo "Options"
 echo
-echo "    Confirm:  $enable_confirm"
-echo "    PNG:      $enable_png"
-echo "    JPEG:     $enable_jpeg"
 echo "    XBM:      $enable_xbm"
 echo "    XRender:  $enable_xrender"
 echo "    FriBidi:  $enable_fribidi"
-echo "    Shape:    $enable_shape"
-echo "    Xmu:      $enable_xmu"
 echo "    Xinerama: $enable_xinerama"
 echo "    Debug:    $enable_debug"
 echo

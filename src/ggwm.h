@@ -72,14 +72,6 @@
 #     include <X11/keysym.h>
 #  endif
 
-#  ifdef USE_SHAPE
-#     include <X11/extensions/shape.h>
-#  endif
-
-#  ifdef USE_XMU
-#     include <X11/Xmu/Xmu.h>
-#  endif
-
 #  ifdef USE_XINERAMA
 #     include <X11/extensions/Xinerama.h>
 #  endif

@@ -19,7 +19,7 @@ void DisplayAbout(void)
 {
    printf("GGWM v" PACKAGE_VERSION " by Scaramacai\n");
    printf("Based on JWM v2.4.6 by Joe Wingbermuehle\n");
-   printf("native icons svg xpm support\n");
+   printf("native: icons png jpeg svg xpm support, confirm dialog\n");
    DisplayCompileOptions();
 }
 
@@ -27,26 +27,14 @@ void DisplayAbout(void)
 void DisplayCompileOptions(void)
 {
    printf("compiled options: "
-#ifndef DISABLE_CONFIRM
-          "confirm "
-#endif
 #ifdef DEBUG
           "debug "
 #endif
 #ifdef USE_FRIBIDI
           "fribidi "
 #endif
-#ifdef USE_JPEG
-          "jpeg "
-#endif
 #ifdef ENABLE_NLS
           "nls "
-#endif
-#ifdef USE_PNG
-          "png "
-#endif
-#ifdef USE_SHAPE
-          "shape "
 #endif
 #ifdef USE_XBM
           "xbm "
