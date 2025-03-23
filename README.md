@@ -16,7 +16,7 @@ At the beginning I was mainly interested in removing the dependence on pango, he
 
 The goals of the project are mainly focused on reducing dependecies on external libraries and possibly reduce the size of the executable itself. 
 
-Obviously this would also imply that some of the feature one finds in jwm, are not available in ggwm, but the trade-off is good to me.
+Obviously this would also imply that some of the feature one finds in jwm, are not available in ggwm, but the trade-off is good to me. I removed the (optional)  dependencies on libXext and libXmu, since I'm not interested to have hapes and rounded corners on a window manager.
 
 The first step in the project was about icon and images. At present, ggwm natively supports svg images and icons thanks to [nanosvg](https://github.com/memononen/nanosvg). This amount to have some svg that cannot be rendered or that can only partially rendered, but in practice I never found a svg icon that fails with nanosvg. 
 
@@ -29,7 +29,9 @@ A big step in the project was using [libschrift](https://github.com/tomolt/libsc
 This is still at an alpha state, but things are going in the right direction and now ggwm with libschrift can be used for everyday work.  
 I removed the dependecies on libXft and FontConfig, while libXrender is still needed to render strings with ttf fonts.
 However  I plan to remove this dependency in the future, so that ggwm could be used also on servers without the XRender extension.   
-At present ggwm is usable, but there is a strange bug I need to investigate, so that only some configurations of fonts works. On the other hand, when ggwm works, it works well, and I'm using it every day.   
+At present ggwm is usable, but there is a strange bug I need to investigate, so that only some configurations of fonts works. It must be noted, however, that all is fine when ggwm whit the same config files is runned inside valgrind! Any help on this issue will be appreciated very much.
+
+Anyway, for the configurations where ggwm already works, it works well, and I'm using it every day.   
 For details on the configuration, please see the file README.schrift.md in this directory.
 
 I also included in the code the ["Simple Dynamic Strings library for C"](https://github.com/antirez/sds) by Salvatore Sanfilippo, to simplify manipulating strings. For now, its use was limited to the files I changed or added, but it would be nice to replace with sds code here and there, where strings are used.
@@ -45,4 +47,4 @@ the following libraries:
 
 
 ------------------------------------------------------------------------------
-The original README.md of JWMs is README.jwm.md
+The original README.md of JWM is in README.jwm.md
