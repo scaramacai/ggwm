@@ -1,3 +1,9 @@
+# Development continues on [codeberg.org/scaramacai/ggwm](https://codeberg.org/scaramacai/ggwm)
+
+**Tree on GitHub is not up to date.**
+
+-----------------------------------
+
 ggwm window manager
 ==============================================================================
 **NOTE:** This is the mirror of my private fossil repository
